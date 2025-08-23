@@ -1,0 +1,325 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  password      String
+  firstName     String
+  lastName      String
+  phone         String?
+  avatar        String?
+  isVerified    Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // PHV specific fields
+  licenseNumber String?
+  vehicleNumber String?
+  phvCompany    String?
+  
+  // Relations
+  expenses         Expense[]
+  earnings         Earning[]
+  receipts         Receipt[]
+  bankConnections  BankConnection[]
+  debts           Debt[]
+  categories      Category[]
+  phvPlatforms    PHVPlatform[]
+  vehicles        Vehicle[]
+  
+  @@map("users")
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  name      String
+  type      CategoryType
+  color     String?
+  icon      String?
+  isDefault Boolean  @default(false)
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expenses Expense[]
+
+  @@unique([name, userId, type])
+  @@map("categories")
+}
+
+model Expense {
+  id          String      @id @default(cuid())
+  amount      Decimal     @db.Decimal(10, 2)
+  description String
+  date        DateTime
+  location    String?
+  notes       String?
+  tags        String[]
+  gstAmount   Decimal?    @db.Decimal(10, 2)
+  
+  // Relations
+  userId      String
+  categoryId  String
+  receiptId   String?
+  
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category    Category    @relation(fields: [categoryId], references: [id])
+  receipt     Receipt?    @relation(fields: [receiptId], references: [id])
+  
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@map("expenses")
+}
+
+model Earning {
+  id             String      @id @default(cuid())
+  amount         Decimal     @db.Decimal(10, 2)
+  grossAmount    Decimal     @db.Decimal(10, 2)
+  netAmount      Decimal     @db.Decimal(10, 2)
+  commission     Decimal?    @db.Decimal(10, 2)
+  incentive      Decimal?    @db.Decimal(10, 2)
+  tips           Decimal?    @db.Decimal(10, 2)
+  date           DateTime
+  startTime      DateTime?
+  endTime        DateTime?
+  distance       Decimal?    @db.Decimal(8, 2)
+  trips          Int?
+  workingHours   Decimal?    @db.Decimal(4, 2)
+  fuelCost       Decimal?    @db.Decimal(10, 2)
+  notes          String?
+  
+  // Relations
+  userId         String
+  platformId     String
+  vehicleId      String?
+  
+  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  platform       PHVPlatform @relation(fields: [platformId], references: [id])
+  vehicle        Vehicle?    @relation(fields: [vehicleId], references: [id])
+  
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  @@map("earnings")
+}
+
+model Receipt {
+  id           String      @id @default(cuid())
+  filename     String
+  originalName String
+  mimeType     String
+  size         Int
+  url          String
+  ocrText      String?
+  ocrData      Json?
+  processedAt  DateTime?
+  
+  // Extracted data from OCR
+  merchant     String?
+  totalAmount  Decimal?    @db.Decimal(10, 2)
+  gstAmount    Decimal?    @db.Decimal(10, 2)
+  receiptDate  DateTime?
+  receiptNumber String?
+  
+  // Relations
+  userId       String
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expenses     Expense[]
+  
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@map("receipts")
+}
+
+model BankConnection {
+  id            String      @id @default(cuid())
+  bankName      BankName
+  accountNumber String
+  accountType   String
+  isActive      Boolean     @default(true)
+  lastSyncAt    DateTime?
+  accessToken   String?     // Encrypted
+  refreshToken  String?     // Encrypted
+  
+  // Relations
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions  Transaction[]
+  
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@unique([userId, bankName, accountNumber])
+  @@map("bank_connections")
+}
+
+model Transaction {
+  id                String         @id @default(cuid())
+  externalId        String         // Bank's transaction ID
+  amount            Decimal        @db.Decimal(10, 2)
+  description       String
+  date              DateTime
+  type              TransactionType
+  category          String?
+  merchant          String?
+  balance           Decimal?       @db.Decimal(10, 2)
+  
+  // Relations
+  bankConnectionId  String
+  bankConnection    BankConnection @relation(fields: [bankConnectionId], references: [id], onDelete: Cascade)
+  
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  @@unique([bankConnectionId, externalId])
+  @@map("transactions")
+}
+
+model Debt {
+  id           String      @id @default(cuid())
+  creditor     String
+  amount       Decimal     @db.Decimal(10, 2)
+  originalAmount Decimal   @db.Decimal(10, 2)
+  interestRate Decimal?    @db.Decimal(5, 4)
+  dueDate      DateTime?
+  minimumPayment Decimal?  @db.Decimal(10, 2)
+  type         DebtType
+  description  String?
+  isPaidOff    Boolean     @default(false)
+  
+  // Relations
+  userId       String
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  payments     DebtPayment[]
+  
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@map("debts")
+}
+
+model DebtPayment {
+  id          String   @id @default(cuid())
+  amount      Decimal  @db.Decimal(10, 2)
+  paymentDate DateTime
+  notes       String?
+  
+  // Relations
+  debtId      String
+  debt        Debt     @relation(fields: [debtId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("debt_payments")
+}
+
+model PHVPlatform {
+  id          String    @id @default(cuid())
+  name        String
+  type        PlatformType
+  commission  Decimal   @db.Decimal(5, 4)
+  apiKey      String?   // Encrypted
+  apiSecret   String?   // Encrypted
+  isActive    Boolean   @default(true)
+  
+  // Relations
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  earnings    Earning[]
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([userId, name])
+  @@map("phv_platforms")
+}
+
+model Vehicle {
+  id             String    @id @default(cuid())
+  make           String
+  model          String
+  year           Int
+  plateNumber    String
+  type           VehicleType
+  fuelType       FuelType
+  fuelCapacity   Decimal?  @db.Decimal(5, 2)
+  fuelEfficiency Decimal?  @db.Decimal(5, 2) // km per liter
+  
+  // Relations
+  userId         String
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  earnings       Earning[]
+  
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@unique([userId, plateNumber])
+  @@map("vehicles")
+}
+
+// Enums
+enum CategoryType {
+  EXPENSE
+  INCOME
+}
+
+enum BankName {
+  DBS
+  OCBC
+  UOB
+  MAYBANK
+  POSB
+  CITIBANK
+  HSBC
+  STANDARD_CHARTERED
+}
+
+enum TransactionType {
+  DEBIT
+  CREDIT
+}
+
+enum DebtType {
+  CREDIT_CARD
+  PERSONAL_LOAN
+  CAR_LOAN
+  MORTGAGE
+  OTHER
+}
+
+enum PlatformType {
+  GRAB
+  GOJEK
+  RYDE
+  TADA
+  OTHER
+}
+
+enum VehicleType {
+  SEDAN
+  HATCHBACK
+  SUV
+  MPV
+  OTHER
+}
+
+enum FuelType {
+  PETROL
+  DIESEL
+  HYBRID
+  ELECTRIC
+}
