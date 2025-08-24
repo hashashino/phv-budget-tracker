@@ -1,17 +1,7 @@
 import { Request } from 'express';
 import { User, BankName, CategoryType, PlatformType, VehicleType, FuelType, DebtType, TransactionType } from '@prisma/client';
 
-// Extend Express Request interface to include user
-declare global {
-  namespace Express {
-    interface Request {
-      user?: {
-        userId: string;
-        email: string;
-      };
-    }
-  }
-}
+// Express Request interface extension is in middleware/auth.ts
 
 // Common response types
 export interface ApiResponse<T = any> {
