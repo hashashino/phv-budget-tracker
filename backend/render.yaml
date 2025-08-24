@@ -3,7 +3,7 @@ services:
     name: phv-budget-tracker-backend
     env: node
     plan: free
-    buildCommand: npm run build:production
+    buildCommand: ./bin/render-build.sh
     startCommand: npm start
     envVars:
       - key: NODE_ENV
