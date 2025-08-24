@@ -71,6 +71,5 @@
     "require": [
       "tsconfig-paths/register"
     ]
-  },
-  "extends": "expo/tsconfig.base"
+  }
 }
