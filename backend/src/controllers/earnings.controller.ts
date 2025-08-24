@@ -420,8 +420,8 @@ export const getEarningsAnalytics = asyncHandler(async (req: Request, res: Respo
   //   phvAnalyticsService.getSeasonalTrends(userId),
   // ]);
   const basicStats = { total: 0, count: 0, average: 0 };
-  const platformComparison = [];
-  const seasonalTrends = [];
+  const platformComparison: any[] = [];
+  const seasonalTrends: any[] = [];
 
   res.status(200).json({
     success: true,

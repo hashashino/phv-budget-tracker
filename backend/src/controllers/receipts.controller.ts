@@ -114,9 +114,9 @@ export const uploadReceipt = asyncHandler(async (req: Request, res: Response): P
     });
 
     // Process OCR in background
-    ocrService.processReceiptOCR(receipt.id).catch(error => {
-      logger.error('OCR processing failed', { receiptId: receipt.id, error });
-    });
+    // ocrService.processReceiptOCR(receipt.id).catch(error => {
+    //   logger.error('OCR processing failed', { receiptId: receipt.id, error });
+    // });
 
     logger.info('Receipt uploaded', { userId, receiptId: receipt.id, filename: file.filename });
 
@@ -157,7 +157,8 @@ export const processReceipt = asyncHandler(async (req: Request, res: Response): 
   }
 
   // Process OCR
-  const updatedReceipt = await ocrService.processReceiptOCR(receipt.id);
+  // const updatedReceipt = await ocrService.processReceiptOCR(receipt.id);
+  const updatedReceipt = receipt; // Placeholder - no OCR processing
 
   res.status(200).json({
     success: true,
@@ -291,9 +292,9 @@ export const bulkUploadReceipts = asyncHandler(async (req: Request, res: Respons
       });
 
       // Process OCR in background
-      ocrService.processReceiptOCR(receipt.id).catch(error => {
-        logger.error('OCR processing failed', { receiptId: receipt.id, error });
-      });
+      // ocrService.processReceiptOCR(receipt.id).catch(error => {
+      //   logger.error('OCR processing failed', { receiptId: receipt.id, error });
+      // });
 
     } catch (error) {
       uploadResults.push({
