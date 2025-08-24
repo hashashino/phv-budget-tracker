@@ -17,9 +17,9 @@ import authRoutes from './routes/auth';
 import expenseRoutes from './routes/expenses';
 import earningRoutes from './routes/earnings';
 import receiptRoutes from './routes/receipts';
-import bankingRoutes from './routes/banking';
+// import bankingRoutes from './routes/banking';
 import debtRoutes from './routes/debts';
-import analyticsRoutes from './routes/analytics';
+// import analyticsRoutes from './routes/analytics';
 import userRoutes from './routes/users';
 
 // Import utilities

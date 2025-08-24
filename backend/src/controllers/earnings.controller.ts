@@ -3,7 +3,7 @@ import { Decimal } from "@prisma/client/runtime/library";
 import { prisma } from '@/config/database';
 import { asyncHandler, NotFoundError, ValidationError } from '@/middleware/errorHandler';
 import { logger } from '@/utils/logger';
-import { phvAnalyticsService } from '@/services/phv-analytics.service';
+// import { phvAnalyticsService } from '@/services/phv-analytics.service';
 
 export const getEarnings = asyncHandler(async (req: Request, res: Response): Promise<void> => {
   const userId = req.user!.userId;
