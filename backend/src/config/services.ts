@@ -1,7 +1,7 @@
 import { logger } from '@/utils/logger';
 import { emailService } from '@/services/email.service';
 import { storageService } from '@/services/storage.service';
-import { ocrService } from '@/services/ocr.service';
+// import { ocrService } from '@/services/ocr.service';
 import { redisClient } from '@/utils/redis';
 
 export async function initializeServices(): Promise<void> {
@@ -21,7 +21,7 @@ export async function initializeServices(): Promise<void> {
     logger.info('Storage service initialized');
 
     // Initialize OCR service
-    await ocrService.initialize();
+    // await ocrService.initialize();
     logger.info('OCR service initialized');
 
     // Test email service

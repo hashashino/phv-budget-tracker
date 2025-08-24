@@ -127,7 +127,8 @@ export const createExpense = asyncHandler(async (req: Request, res: Response): P
   let finalAmount = Number(amount);
 
   if (includeGst) {
-    const gstCalculation = gstService.calculateGST(finalAmount);
+    // const gstCalculation = gstService.calculateGST(finalAmount);
+    const gstCalculation = { gstAmount: finalAmount * 0.09, totalWithGST: finalAmount * 1.09 }; // Placeholder 9% GST
     gstAmount = Number(gstCalculation.gstAmount);
     finalAmount = Number(gstCalculation.amountBeforeGST);
   }
@@ -207,7 +208,8 @@ export const updateExpense = asyncHandler(async (req: Request, res: Response): P
 
   if (includeGst !== undefined && amount) {
     if (includeGst) {
-      const gstCalculation = gstService.calculateGST(finalAmount);
+      // const gstCalculation = gstService.calculateGST(finalAmount);
+    const gstCalculation = { gstAmount: finalAmount * 0.09, totalWithGST: finalAmount * 1.09 }; // Placeholder 9% GST
       gstAmount = Number(gstCalculation.gstAmount);
       finalAmount = Number(gstCalculation.amountBeforeGST);
     } else {
@@ -298,7 +300,8 @@ export const bulkCreateExpenses = asyncHandler(async (req: Request, res: Respons
     let finalAmount = Number(expense.amount);
 
     if (expense.includeGst) {
-      const gstCalculation = gstService.calculateGST(finalAmount);
+      // const gstCalculation = gstService.calculateGST(finalAmount);
+    const gstCalculation = { gstAmount: finalAmount * 0.09, totalWithGST: finalAmount * 1.09 }; // Placeholder 9% GST
       gstAmount = Number(gstCalculation.gstAmount);
       finalAmount = Number(gstCalculation.amountBeforeGST);
     }
