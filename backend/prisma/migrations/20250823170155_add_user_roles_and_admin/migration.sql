@@ -1,0 +1,11 @@
+-- CreateEnum
+CREATE TYPE "UserRole" AS ENUM ('USER', 'CUSTOMER_SUPPORT', 'OPERATIONS_ADMIN', 'TECHNICAL_ADMIN', 'FINANCE_MANAGER', 'SUPER_ADMIN');
+
+-- AlterTable
+ALTER TABLE "users" ADD COLUMN     "approvedBy" TEXT,
+ADD COLUMN     "financialAccessLevel" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "isActive" BOOLEAN NOT NULL DEFAULT true,
+ADD COLUMN     "lastFinancialAccess" TIMESTAMP(3),
+ADD COLUMN     "lastLoginAt" TIMESTAMP(3),
+ADD COLUMN     "requiresApproval" BOOLEAN NOT NULL DEFAULT false,
+ADD COLUMN     "role" "UserRole" NOT NULL DEFAULT 'USER';

@@ -89,8 +89,8 @@ export const redisRateLimit = (options: {
 
 // Predefined rate limit configurations
 export const authRateLimit = createRateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // 5 attempts per window
+  windowMs: 5 * 60 * 1000, // 5 minutes
+  max: 20, // 20 attempts per window (for development)
   message: 'Too many authentication attempts, please try again later',
   skipSuccessfulRequests: true,
 });

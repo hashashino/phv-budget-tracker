@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { Text, Card, Button, FAB, Chip, useTheme } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { ExpensesStackParamList } from '@types/index';
+
+type ExpensesScreenNavigationProp = NativeStackNavigationProp<ExpensesStackParamList, 'ExpensesList'>;
 
 const ExpensesScreen: React.FC = () => {
   const theme = useTheme();
+  const navigation = useNavigation<ExpensesScreenNavigationProp>();
   const [selectedFilter, setSelectedFilter] = useState('All');
 
   // Sample PHV expenses data
@@ -164,8 +170,7 @@ const ExpensesScreen: React.FC = () => {
         icon="plus"
         label="Add Expense"
         onPress={() => {
-          // TODO: Navigate to add expense screen
-          console.log('Add expense pressed');
+          navigation.navigate('ExpenseEntry', {});
         }}
       />
     </View>

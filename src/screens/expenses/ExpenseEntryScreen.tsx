@@ -225,6 +225,7 @@ const ExpenseEntryScreen: React.FC<ExpenseEntryScreenProps> = ({
           };
 
           return (
+            <>
           <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
             <Card style={styles.formCard}>
               <Title style={styles.title}>Add Expense</Title>
@@ -385,42 +386,53 @@ const ExpenseEntryScreen: React.FC<ExpenseEntryScreenProps> = ({
                 {isSubmitting ? 'Adding Expense...' : 'Add Expense'}
               </Button>
             </Card>
+
+              {/* Date Picker */}
+              {showDatePicker && (
+                <DateTimePicker
+                  value={values.date}
+                  mode="date"
+                  display="default"
+                  onChange={handleDateChange}
+                />
+              )}
           </ScrollView>
+
+              {/* Category Selection Modal */}
+              <Portal>
+                <Modal
+                  visible={showCategoryModal}
+                  onDismiss={() => setShowCategoryModal(false)}
+                  contentContainerStyle={styles.modal}
+                >
+                  <Text style={styles.modalTitle}>Select Category</Text>
+                  <ScrollView>
+                    {Object.entries(EXPENSE_CATEGORIES).map(([key, category]) => (
+                      <List.Item
+                        key={key}
+                        title={category.label}
+                        left={(props) => (
+                          <MaterialCommunityIcons
+                            {...props}
+                            name={category.icon}
+                            size={24}
+                            color={category.color}
+                          />
+                        )}
+                        onPress={() => {
+                          setFieldValue('category', key as ExpenseCategory);
+                          setShowCategoryModal(false);
+                        }}
+                        style={styles.categoryItem}
+                      />
+                    ))}
+                  </ScrollView>
+                </Modal>
+              </Portal>
+            </>
           );
         }}
       </Formik>
-
-      {/* Category Selection Modal */}
-      <Portal>
-        <Modal
-          visible={showCategoryModal}
-          onDismiss={() => setShowCategoryModal(false)}
-          contentContainerStyle={styles.modal}
-        >
-          <Text style={styles.modalTitle}>Select Category</Text>
-          <ScrollView>
-            {Object.entries(EXPENSE_CATEGORIES).map(([key, category]) => (
-              <List.Item
-                key={key}
-                title={category.label}
-                left={(props) => (
-                  <MaterialCommunityIcons
-                    {...props}
-                    name={category.icon}
-                    size={24}
-                    color={category.color}
-                  />
-                )}
-                onPress={() => {
-                  // This will need to be handled differently since setFieldValue is in Formik context
-                  setShowCategoryModal(false);
-                }}
-                style={styles.categoryItem}
-              />
-            ))}
-          </ScrollView>
-        </Modal>
-      </Portal>
     </View>
   );
 };

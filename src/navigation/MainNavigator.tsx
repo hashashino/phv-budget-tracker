@@ -2,19 +2,23 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from 'react-native-paper';
+import { useSelector } from 'react-redux';
 
 import { MainTabParamList } from '@types/index';
+import { RootState } from '@store/store';
 import DashboardScreen from '@screens/dashboard/DashboardScreen';
-import ExpensesScreen from '@screens/expenses/ExpensesScreen';
-import EarningsScreen from '@screens/earnings/EarningsScreen';
-import ReceiptsScreen from '@screens/receipts/ReceiptsScreen';
+import ExpensesStackNavigator from '@navigation/ExpensesStackNavigator';
+import EarningsStackNavigator from '@navigation/EarningsStackNavigator';
+import ReceiptsStackNavigator from '@navigation/ReceiptsStackNavigator';
 import ReportsScreen from '@screens/reports/ReportsScreen';
 import SettingsScreen from '@screens/settings/SettingsScreen';
+import AdminScreen from '@screens/admin/AdminScreen';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
 const MainNavigator: React.FC = () => {
   const theme = useTheme();
+  const user = useSelector((state: RootState) => state.auth.user);
 
   return (
     <Tab.Navigator
@@ -26,13 +30,13 @@ const MainNavigator: React.FC = () => {
             case 'Dashboard':
               iconName = focused ? 'view-dashboard' : 'view-dashboard-outline';
               break;
-            case 'Expenses':
+            case 'ExpensesStack':
               iconName = focused ? 'cash-minus' : 'cash-minus';
               break;
-            case 'Earnings':
+            case 'EarningsStack':
               iconName = focused ? 'cash-plus' : 'cash-plus';
               break;
-            case 'Receipts':
+            case 'ReceiptsStack':
               iconName = focused ? 'receipt' : 'receipt-outline';
               break;
             case 'Reports':
@@ -40,6 +44,9 @@ const MainNavigator: React.FC = () => {
               break;
             case 'Settings':
               iconName = focused ? 'cog' : 'cog-outline';
+              break;
+            case 'Admin':
+              iconName = focused ? 'shield-account' : 'shield-account-outline';
               break;
             default:
               iconName = 'help-circle-outline';
@@ -84,18 +91,18 @@ const MainNavigator: React.FC = () => {
         options={{ title: 'Dashboard' }}
       />
       <Tab.Screen
-        name="Expenses"
-        component={ExpensesScreen}
+        name="ExpensesStack"
+        component={ExpensesStackNavigator}
         options={{ title: 'Expenses' }}
       />
       <Tab.Screen
-        name="Earnings"
-        component={EarningsScreen}
+        name="EarningsStack"
+        component={EarningsStackNavigator}
         options={{ title: 'Earnings' }}
       />
       <Tab.Screen
-        name="Receipts"
-        component={ReceiptsScreen}
+        name="ReceiptsStack"
+        component={ReceiptsStackNavigator}
         options={{ title: 'Receipts' }}
       />
       <Tab.Screen
@@ -108,6 +115,13 @@ const MainNavigator: React.FC = () => {
         component={SettingsScreen}
         options={{ title: 'Settings' }}
       />
+      {user?.role === 'SUPER_ADMIN' && (
+        <Tab.Screen
+          name="Admin"
+          component={AdminScreen}
+          options={{ title: 'Admin' }}
+        />
+      )}
     </Tab.Navigator>
   );
 };

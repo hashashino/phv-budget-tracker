@@ -2,9 +2,15 @@ import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
 import { Text, Card, Button, FAB, Chip, useTheme, Surface, IconButton } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { ReceiptsStackParamList } from '@types/index';
+
+type ReceiptsScreenNavigationProp = NativeStackNavigationProp<ReceiptsStackParamList, 'ReceiptsList'>;
 
 const ReceiptsScreen: React.FC = () => {
   const theme = useTheme();
+  const navigation = useNavigation<ReceiptsScreenNavigationProp>();
   const [selectedFilter, setSelectedFilter] = useState('All');
 
   // Sample receipt data
@@ -343,7 +349,7 @@ const ReceiptsScreen: React.FC = () => {
         icon="camera"
         label="Capture"
         onPress={() => {
-          console.log('Capture receipt pressed');
+          navigation.navigate('ReceiptCapture', {});
         }}
       />
     </View>

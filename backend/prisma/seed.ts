@@ -129,7 +129,7 @@ async function main() {
         date: new Date('2024-01-15'),
         location: 'Shell Station Orchard',
         categoryId: fuelCategory.id,
-        gstAmount: 4.34,
+        gstAmount: 4.88,
       },
       {
         amount: 250.00,
@@ -137,7 +137,7 @@ async function main() {
         date: new Date('2024-01-10'),
         location: 'Toyota Service Centre',
         categoryId: maintenanceCategory.id,
-        gstAmount: 16.58,
+        gstAmount: 18.65,
       },
     ];
 

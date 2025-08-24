@@ -1,0 +1,34 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🔍 Running SEO validation before deployment..."
+
+# 1. Meta tag validation for all regional pages
+echo "📋 Validating meta tags for all regions..."
+npm run validate:seo-meta
+
+# 2. Page speed and Core Web Vitals check
+echo "⚡ Checking page speed requirements..."
+npm run validate:page-speed
+
+# 3. Schema markup validation
+echo "🏷️  Validating structured data..."
+npm run validate:schema-markup
+
+# 4. International SEO validation
+echo "🌍 Checking hreflang and international SEO..."
+npm run validate:international-seo
+
+# 5. Content SEO score analysis
+echo "📝 Analyzing content SEO scores..."
+npm run analyze:seo-content
+
+# 6. Mobile-first indexing compliance
+echo "📱 Validating mobile-first compliance..."
+npm run validate:mobile-seo
+
+# 7. Internal link structure validation
+echo "🔗 Checking internal link structure..."
+npm run validate:internal-links
+
+echo "✅ SEO validation complete - ready for deployment!"

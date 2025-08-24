@@ -10,6 +10,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  USER                // Regular PHV drivers
+  CUSTOMER_SUPPORT    // Support team - user billing only
+  OPERATIONS_ADMIN    // Operations - no financial data
+  TECHNICAL_ADMIN     // Tech team - system health only
+  FINANCE_MANAGER     // Finance team - operational financial data
+  SUPER_ADMIN         // Full system access
+}
+
 model User {
   id            String   @id @default(cuid())
   email         String   @unique
@@ -18,14 +27,28 @@ model User {
   lastName      String
   phone         String?
   avatar        String?
+  role          UserRole @default(USER)
   isVerified    Boolean  @default(false)
+  isActive      Boolean  @default(true)
+  lastLoginAt   DateTime?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  // PHV specific fields
+  // PHV specific fields (only for USER role)
   licenseNumber String?
   vehicleNumber String?
   phvCompany    String?
+  
+  // Regional settings
+  countryCode   String   @default("SG")
+  preferredLanguage String @default("en")
+  timezone      String   @default("Asia/Singapore")
+  
+  // Financial access tracking (for admin roles)
+  lastFinancialAccess    DateTime?
+  financialAccessLevel   Int       @default(0)
+  requiresApproval       Boolean   @default(false)
+  approvedBy            String?
   
   // Relations
   expenses         Expense[]
@@ -322,4 +345,22 @@ enum FuelType {
   DIESEL
   HYBRID
   ELECTRIC
+}
+
+model TokenBlacklist {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  type      TokenType
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([token])
+  @@index([expiresAt])
+  @@map("token_blacklist")
+}
+
+enum TokenType {
+  ACCESS_TOKEN
+  REFRESH_TOKEN
 }

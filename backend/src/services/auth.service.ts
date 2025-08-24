@@ -118,8 +118,17 @@ class AuthService {
       // Verify refresh token
       const decoded = jwt.verify(refreshToken, config.jwt.secret) as TokenPayload;
 
-      // Check if refresh token is blacklisted
-      const isBlacklisted = await cacheService.exists(`refresh_token_blacklist:${refreshToken}`);
+      // Check if refresh token is blacklisted (Redis first, then database)
+      let isBlacklisted = await cacheService.exists(`refresh_token_blacklist:${refreshToken}`);
+      
+      if (!isBlacklisted) {
+        // Check database as fallback
+        const blacklistedToken = await prisma.tokenBlacklist.findUnique({
+          where: { token: refreshToken },
+        });
+        isBlacklisted = !!blacklistedToken && blacklistedToken.expiresAt > new Date();
+      }
+      
       if (isBlacklisted) {
         throw new UnauthorizedError('Refresh token is invalid');
       }
@@ -137,11 +146,27 @@ class AuthService {
       const tokens = await this.generateTokens(user);
 
       // Blacklist old refresh token
-      await cacheService.set(
+      const redisSuccess = await cacheService.set(
         `refresh_token_blacklist:${refreshToken}`,
         true,
         this.refreshTokenTTL
       );
+
+      // Fallback to database if Redis fails
+      if (!redisSuccess) {
+        try {
+          await prisma.tokenBlacklist.create({
+            data: {
+              token: refreshToken,
+              userId: decoded.userId,
+              type: 'REFRESH_TOKEN',
+              expiresAt: new Date(Date.now() + this.refreshTokenTTL * 1000),
+            },
+          });
+        } catch (error) {
+          logger.warn('Failed to blacklist old refresh token in database', { error });
+        }
+      }
 
       return tokens;
     } catch (error) {
@@ -154,12 +179,28 @@ class AuthService {
 
   async logout(userId: string, refreshToken?: string): Promise<void> {
     if (refreshToken) {
-      // Blacklist refresh token
-      await cacheService.set(
+      // Try Redis first
+      const redisSuccess = await cacheService.set(
         `refresh_token_blacklist:${refreshToken}`,
         true,
         this.refreshTokenTTL
       );
+
+      // Fallback to database if Redis fails
+      if (!redisSuccess) {
+        try {
+          await prisma.tokenBlacklist.create({
+            data: {
+              token: refreshToken,
+              userId,
+              type: 'REFRESH_TOKEN',
+              expiresAt: new Date(Date.now() + this.refreshTokenTTL * 1000),
+            },
+          });
+        } catch (error) {
+          logger.warn('Failed to blacklist token in database', { error });
+        }
+      }
     }
 
     // Invalidate all user sessions (optional)
@@ -261,6 +302,12 @@ class AuthService {
 
     const { password: _, ...userWithoutPassword } = user;
     return userWithoutPassword;
+  }
+
+  async getUserWithRole(userId: string): Promise<User | null> {
+    return prisma.user.findUnique({
+      where: { id: userId },
+    });
   }
 
   async updateProfile(

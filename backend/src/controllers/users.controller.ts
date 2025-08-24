@@ -5,6 +5,30 @@ import { prisma } from '@/config/database';
 import { storageService } from '@/services/storage.service';
 import { CategoryType, PlatformType, VehicleType, FuelType } from '@prisma/client';
 
+export const getAllUsers = asyncHandler(async (req: Request, res: Response): Promise<void> => {
+  const users = await prisma.user.findMany({
+    orderBy: {
+      createdAt: 'desc',
+    },
+    select: {
+      id: true,
+      email: true,
+      firstName: true,
+      lastName: true,
+      role: true,
+      isActive: true,
+      lastLoginAt: true,
+      createdAt: true,
+    },
+  });
+
+  res.status(200).json({
+    success: true,
+    message: 'Users retrieved successfully',
+    data: { users },
+  });
+});
+
 export const getProfile = asyncHandler(async (req: Request, res: Response): Promise<void> => {
   const userId = req.user!.userId;
 

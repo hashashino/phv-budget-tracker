@@ -1,0 +1,34 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "💳 Running billing and ACRA compliance validation..."
+
+# 1. Subscription pricing validation
+echo "💰 Validating regional subscription pricing..."
+npm run validate:subscription-pricing
+
+# 2. Payment gateway health check
+echo "🔗 Checking payment gateway connectivity..."
+npm run validate:payment-gateways
+
+# 3. ACRA financial compliance check
+echo "📊 Validating ACRA financial compliance..."
+npm run validate:acra-compliance
+
+# 4. Tax calculation validation
+echo "🧾 Validating tax calculations (GST, CIT)..."
+npm run validate:tax-calculations
+
+# 5. Revenue recognition validation
+echo "📈 Validating revenue recognition rules..."
+npm run validate:revenue-recognition
+
+# 6. Audit trail integrity check
+echo "🔍 Checking audit trail integrity..."
+npm run validate:audit-trail
+
+# 7. Financial reporting validation
+echo "📋 Validating financial reporting accuracy..."
+npm run validate:financial-reports
+
+echo "✅ Billing and ACRA compliance validation complete!"

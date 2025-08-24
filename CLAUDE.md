@@ -4,7 +4,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a PHV Budget Tracker - a mobile-first budget tracking application designed specifically for Private Hire Vehicle (PHV) drivers in Singapore. The application uses a full-stack TypeScript architecture with React Native frontend and Node.js backend.
+This is a PHV Budget Tracker - a mobile-first budget tracking application designed specifically for Private Hire Vehicle (PHV) drivers, starting with Singapore and expandable to Southeast Asia and globally. The application uses a full-stack TypeScript architecture with React Native frontend and Node.js backend, built with international expansion in mind from day one.
+
+### **Multi-Country Support (Ready for Expansion)**
+- **Regional Configuration Framework**: Country-specific tax rates, currencies, banking APIs
+- **Supported Regions**: Singapore (primary), Malaysia, Thailand, Indonesia, US, Australia  
+- **Flexible Tax System**: GST, VAT, Sales Tax, SST support
+- **Multi-Currency**: SGD, MYR, THB, IDR, USD, AUD with historical conversion
+- **Banking Integration**: Region-specific banking APIs (DBS/OCBC/UOB for SG, Maybank/CIMB for MY, etc.)
+- **Regulatory Compliance**: GDPR-ready, country-specific driver licensing formats
 
 ## Development Commands
 
@@ -67,6 +75,7 @@ make build-mobile      # Mobile app only
 - **File Storage**: Local filesystem with S3 support
 - **Caching**: Redis for session management
 - **APIs**: RESTful endpoints with comprehensive validation
+- **Regional Services**: Multi-country configuration, currency conversion, regional banking APIs
 
 ### Frontend Architecture  
 - **Framework**: React Native with Expo
@@ -77,10 +86,20 @@ make build-mobile      # Mobile app only
 
 ### Key Features
 - **OCR Processing**: Google Cloud Vision API for receipt/earnings screenshot extraction
-- **Banking Integration**: OAuth 2.0 connections with DBS, OCBC, UOB, POSB
-- **PHV-Specific**: Earnings tracking for Grab, TADA, Gojek platforms
+- **Multi-Regional Banking**: OAuth 2.0 connections with banks across supported countries
+  - **Singapore**: DBS, OCBC, UOB, POSB
+  - **Malaysia**: Maybank, CIMB, Public Bank, Hong Leong
+  - **Global**: Extensible banking adapter framework
+- **PHV Platform Integration**: Regional ride-hailing platform support
+  - **Southeast Asia**: Grab, TADA, Gojek
+  - **Global**: Uber, Lyft, Bolt, local platforms
 - **Debt Management**: Multi-debt tracking with payoff projections
-- **Singapore Focus**: SGD currency, GST calculations, local banking APIs
+- **Regional Tax Support**: Country-specific tax calculations
+  - **Singapore**: 9% GST (updated Jan 2024)
+  - **Malaysia**: 6% SST  
+  - **Thailand**: 7% VAT
+  - **Indonesia**: 11% PPN
+  - **US/AU**: Regional tax variations
 
 ## Database Schema (Prisma)
 
@@ -92,6 +111,15 @@ Core entities include:
 - **BankConnections**: Encrypted OAuth tokens for bank APIs
 - **Debts**: Multi-debt tracking with payment projections
 - **PHVPlatforms**: Platform configurations (Grab, TADA, etc.)
+
+### User Roles (`UserRole` enum)
+The system uses a granular, role-based access control (RBAC) model:
+- **USER**: Regular PHV drivers, the primary users of the app.
+- **CUSTOMER_SUPPORT**: Support team, with access to user billing for support cases.
+- **OPERATIONS_ADMIN**: Operations team, for user management without access to financial data.
+- **TECHNICAL_ADMIN**: Tech team, for monitoring system health.
+- **FINANCE_MANAGER**: Finance team, with access to operational financial data and reports.
+- **SUPER_ADMIN**: Full system access for owners/directors.
 
 ## Development Patterns
 

@@ -10,12 +10,12 @@ import MainNavigator from './MainNavigator';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const Navigation: React.FC = () => {
-  const { isAuthenticated } = useAppSelector(state => state.auth);
+  const { user, token } = useAppSelector(state => state.auth);
   
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {isAuthenticated ? (
+        {(user && token) ? (
           <Stack.Screen name="Main" component={MainNavigator} />
         ) : (
           <Stack.Screen name="Auth" component={AuthNavigator} />

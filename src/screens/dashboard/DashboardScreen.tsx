@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   ScrollView,
@@ -12,16 +12,28 @@ import {
   useTheme,
   FAB,
   Chip,
+  Portal,
+  Modal,
+  List,
+  Text,
+  Button,
 } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { MainTabParamList } from '@types/index';
 
 import { useAppSelector } from '@store/store';
 import { APP_CONFIG } from '@constants/index';
 
+type DashboardScreenNavigationProp = BottomTabNavigationProp<MainTabParamList, 'Dashboard'>;
+
 const DashboardScreen: React.FC = () => {
   const theme = useTheme();
+  const navigation = useNavigation<DashboardScreenNavigationProp>();
   const { user } = useAppSelector(state => state.auth);
   const [refreshing, setRefreshing] = React.useState(false);
+  const [showQuickActions, setShowQuickActions] = useState(false);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -149,6 +161,27 @@ const DashboardScreen: React.FC = () => {
       right: 16,
       bottom: 16,
     },
+    quickActionsModal: {
+      backgroundColor: 'white',
+      margin: 20,
+      borderRadius: 12,
+      paddingTop: 20,
+    },
+    quickActionsTitle: {
+      fontSize: 18,
+      fontWeight: '600',
+      textAlign: 'center',
+      marginBottom: 16,
+      color: theme.colors.onSurface,
+    },
+    quickActionItem: {
+      paddingVertical: 16,
+      paddingHorizontal: 20,
+    },
+    cancelButton: {
+      margin: 16,
+      marginTop: 8,
+    },
   });
 
   return (
@@ -259,10 +292,117 @@ const DashboardScreen: React.FC = () => {
         style={styles.fab}
         icon="plus"
         label="Add Entry"
-        onPress={() => {
-          // TODO: Show quick action menu
-        }}
+        onPress={() => setShowQuickActions(true)}
       />
+
+      {/* Quick Actions Modal */}
+      <Portal>
+        <Modal
+          visible={showQuickActions}
+          onDismiss={() => setShowQuickActions(false)}
+          contentContainerStyle={styles.quickActionsModal}
+        >
+          <Text style={styles.quickActionsTitle}>Add New Entry</Text>
+          
+          <List.Item
+            title="Add Expense"
+            description="Track fuel, maintenance, meals, etc."
+            left={(props) => (
+              <MaterialCommunityIcons
+                {...props}
+                name="cash-minus"
+                size={24}
+                color={theme.colors.error}
+              />
+            )}
+            right={(props) => (
+              <MaterialCommunityIcons
+                {...props}
+                name="chevron-right"
+                size={24}
+                color={theme.colors.onSurfaceVariant}
+              />
+            )}
+            onPress={() => {
+              setShowQuickActions(false);
+              // @ts-ignore - Navigation to nested stack navigator
+              navigation.navigate('ExpensesStack', {
+                screen: 'ExpenseEntry',
+                params: {},
+              });
+            }}
+            style={styles.quickActionItem}
+          />
+          
+          <List.Item
+            title="Add Earning"
+            description="Log trip earnings, bonuses, incentives"
+            left={(props) => (
+              <MaterialCommunityIcons
+                {...props}
+                name="cash-plus"
+                size={24}
+                color={theme.colors.primary}
+              />
+            )}
+            right={(props) => (
+              <MaterialCommunityIcons
+                {...props}
+                name="chevron-right"
+                size={24}
+                color={theme.colors.onSurfaceVariant}
+              />
+            )}
+            onPress={() => {
+              setShowQuickActions(false);
+              // @ts-ignore - Navigation to nested stack navigator
+              navigation.navigate('EarningsStack', {
+                screen: 'EarningEntry',
+                params: {},
+              });
+            }}
+            style={styles.quickActionItem}
+          />
+          
+          <List.Item
+            title="Capture Receipt"
+            description="Photo scan for automatic processing"
+            left={(props) => (
+              <MaterialCommunityIcons
+                {...props}
+                name="camera"
+                size={24}
+                color={theme.colors.tertiary}
+              />
+            )}
+            right={(props) => (
+              <MaterialCommunityIcons
+                {...props}
+                name="chevron-right"
+                size={24}
+                color={theme.colors.onSurfaceVariant}
+              />
+            )}
+            onPress={() => {
+              setShowQuickActions(false);
+              // @ts-ignore - Navigation to nested stack navigator
+              navigation.navigate('ReceiptsStack', {
+                screen: 'ReceiptCapture',
+                params: {},
+              });
+            }}
+            style={styles.quickActionItem}
+          />
+          
+          <Button
+            mode="outlined"
+            onPress={() => setShowQuickActions(false)}
+            style={styles.cancelButton}
+          >
+            Cancel
+          </Button>
+        </Modal>
+      </Portal>
     </View>
   );
 };

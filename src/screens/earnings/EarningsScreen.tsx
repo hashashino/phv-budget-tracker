@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { Text, Card, Button, FAB, Chip, useTheme, SegmentedButtons } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { EarningsStackParamList } from '@types/index';
+
+type EarningsScreenNavigationProp = NativeStackNavigationProp<EarningsStackParamList, 'EarningsList'>;
 
 const EarningsScreen: React.FC = () => {
   const theme = useTheme();
+  const navigation = useNavigation<EarningsScreenNavigationProp>();
   const [selectedPlatform, setSelectedPlatform] = useState('All');
   const [selectedPeriod, setSelectedPeriod] = useState('today');
 
@@ -205,7 +211,7 @@ const EarningsScreen: React.FC = () => {
         icon="plus"
         label="Add Earning"
         onPress={() => {
-          console.log('Add earning pressed');
+          navigation.navigate('EarningEntry', {});
         }}
       />
     </View>

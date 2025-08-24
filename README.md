@@ -2,6 +2,15 @@
 
 A mobile-first budget tracking application designed specifically for Private Hire Vehicle (PHV) drivers in Singapore.
 
+## 🚀 **Current Status: FULLY FUNCTIONAL**
+
+- ✅ **Backend API**: Running on port 3000
+- ✅ **Frontend (Expo)**: Running on port 8081  
+- ✅ **Database**: PostgreSQL + Redis operational
+- ✅ **Full Stack**: Ready for development and testing
+
+📋 **Setup Documentation**: See [EXPO_SETUP_GUIDE.md](./EXPO_SETUP_GUIDE.md) for detailed setup instructions and troubleshooting.
+
 ## Features
 
 ### 📱 Core Functionality
@@ -26,24 +35,35 @@ A mobile-first budget tracking application designed specifically for Private Hir
 ## Quick Start
 
 ### Prerequisites
-- Node.js 18+
-- npm or yarn
-- Docker (optional, for database)
-- Expo CLI (for mobile development)
+- **Node.js 22.18.0+** (tested and working)
+- npm or yarn  
+- Docker (for PostgreSQL and Redis)
+- **No global Expo CLI needed** (use npx)
 
-### Installation
+### **✅ CURRENT WORKING SETUP**
 
 ```bash
-# Install dependencies
-npm run setup
+# 1. Install dependencies (IMPORTANT: use legacy peer deps)
+npm install --legacy-peer-deps
 
-# Start development servers
-npm run dev
+# 2. Start Docker services
+docker-compose up -d
 
-# Or start individually
-npm run dev:backend  # Backend API on port 3000
-npm run dev:mobile   # Mobile app with Expo
+# 3. Run database migrations
+cd backend && npx prisma migrate dev
+
+# 4. Start backend (Terminal 1)
+cd backend && npm run dev
+
+# 5. Start frontend (Terminal 2) 
+npx expo start
+
+# Access:
+# Backend API: http://localhost:3000
+# Metro Bundler: http://localhost:8081
 ```
+
+⚠️ **CRITICAL**: Always use `--legacy-peer-deps` for npm install due to React 19/Redux Toolkit compatibility issues.
 
 ### Database Setup
 

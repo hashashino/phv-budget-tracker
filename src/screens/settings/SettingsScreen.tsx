@@ -16,7 +16,7 @@ import {
 } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAppSelector, useAppDispatch } from '@store/store';
-import { clearAuth } from '@store/slices/authSlice';
+import { clearAuth, logoutUser } from '@store/slices/authSlice';
 
 const SettingsScreen: React.FC = () => {
   const theme = useTheme();
@@ -30,7 +30,7 @@ const SettingsScreen: React.FC = () => {
 
   const handleLogout = () => {
     setLogoutDialog(false);
-    dispatch(clearAuth());
+    dispatch(logoutUser());
   };
 
   const settingSections = [

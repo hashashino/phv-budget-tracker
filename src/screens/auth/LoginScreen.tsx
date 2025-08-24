@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { 
   Text, 
@@ -11,7 +11,7 @@ import {
 } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { useAppDispatch, useAppSelector } from '@store/store';
-import { setUser, setToken } from '@store/slices/authSlice';
+import { loginUser, clearError, resetLoadingState } from '@store/slices/authSlice';
 
 const LoginScreen: React.FC = () => {
   const theme = useTheme();
@@ -23,23 +23,15 @@ const LoginScreen: React.FC = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
+  // Reset loading state when component mounts
+  useEffect(() => {
+    dispatch(resetLoadingState());
+  }, [dispatch]);
+
   const handleLogin = async () => {
-    // For demo purposes, accept any email/password
     if (email.trim() && password.trim()) {
-      const demoUser = {
-        id: 'demo-user',
-        email: email,
-        firstName: email.split('@')[0],
-        lastName: 'Driver',
-        name: `${email.split('@')[0]} Driver`,
-        phoneNumber: '+65 9123 4567',
-        licenseNumber: 'SH1234567A',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-      
-      dispatch(setUser(demoUser));
-      dispatch(setToken('demo-token'));
+      dispatch(clearError()); // Clear any previous errors
+      dispatch(loginUser({ email, password }));
     }
   };
 
@@ -106,17 +98,6 @@ const LoginScreen: React.FC = () => {
       marginTop: 4,
       textAlign: 'center',
     },
-    demoNote: {
-      backgroundColor: theme.colors.primaryContainer,
-      padding: 16,
-      borderRadius: 8,
-      marginBottom: 16,
-    },
-    demoText: {
-      fontSize: 12,
-      color: theme.colors.onPrimaryContainer,
-      textAlign: 'center',
-    },
   });
 
   return (
@@ -130,13 +111,6 @@ const LoginScreen: React.FC = () => {
           <Text style={styles.title}>Welcome Back</Text>
           <Text style={styles.subtitle}>
             Sign in to your PHV Budget Tracker account
-          </Text>
-        </View>
-
-        {/* Demo Notice */}
-        <View style={styles.demoNote}>
-          <Text style={styles.demoText}>
-            Demo Mode: Enter any email and password to continue
           </Text>
         </View>
 

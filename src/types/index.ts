@@ -1,8 +1,17 @@
+export type UserRole = 
+  | 'USER'
+  | 'CUSTOMER_SUPPORT'
+  | 'OPERATIONS_ADMIN'
+  | 'TECHNICAL_ADMIN'
+  | 'FINANCE_MANAGER'
+  | 'SUPER_ADMIN';
+
 // User and Authentication Types
 export interface User {
   id: string;
   email: string;
   name: string;
+  role: UserRole;
   firstName?: string;
   lastName?: string;
   phoneNumber: string;
@@ -170,11 +179,30 @@ export type AuthStackParamList = {
 
 export type MainTabParamList = {
   Dashboard: undefined;
-  Expenses: undefined;
-  Earnings: undefined;
-  Receipts: undefined;
+  ExpensesStack: undefined;
+  EarningsStack: undefined;
+  ReceiptsStack: undefined;
   Reports: undefined;
   Settings: undefined;
+  Admin: undefined;
+};
+
+export type ExpensesStackParamList = {
+  ExpensesList: undefined;
+  ExpenseEntry: { initialCategory?: ExpenseCategory; receiptImage?: string };
+  ExpenseDetails: { expenseId: string };
+};
+
+export type EarningsStackParamList = {
+  EarningsList: undefined;
+  EarningEntry: { initialPlatform?: Platform };
+  EarningDetails: { earningId: string };
+};
+
+export type ReceiptsStackParamList = {
+  ReceiptsList: undefined;
+  ReceiptCapture: { expenseId?: string };
+  ReceiptDetails: { receiptId: string };
 };
 
 // Form Types

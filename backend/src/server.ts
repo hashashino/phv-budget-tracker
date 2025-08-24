@@ -95,9 +95,11 @@ app.use('/api/debts', authMiddleware, debtRoutes);
 // app.use('/api/analytics', authMiddleware, analyticsRoutes);  // Temporarily disabled
 app.use('/api/users', authMiddleware, userRoutes);
 
-// Error handling middleware
-app.use(validationErrorHandler);
+// Handle 404 - must be after all other routes
 app.use(notFoundHandler);
+
+// Error handling middleware - must be last
+app.use(validationErrorHandler);
 app.use(errorHandler);
 
 // Graceful shutdown
@@ -127,7 +129,7 @@ async function startServer() {
       logger.warn('Database connection failed, some features will be limited');
     }
 
-    app.listen(PORT, () => {
+    app.listen(Number(PORT), '0.0.0.0', () => {
       logger.info(`Server running on port ${PORT}`);
       logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
     });

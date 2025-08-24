@@ -1,0 +1,31 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "👥 Running admin onboarding security validation..."
+
+# 1. RBAC configuration check
+echo "🔒 Validating role-based access controls..."
+npm run validate:rbac-config
+
+# 2. Financial endpoint security validation
+echo "💰 Checking financial endpoint permissions..."
+npm run validate:financial-endpoints
+
+# 3. Data masking rules validation
+echo "🎭 Validating data masking configurations..."
+npm run validate:data-masking
+
+# 4. Audit trail setup verification
+echo "📋 Verifying audit trail configuration..."
+npm run validate:audit-trail
+
+# 5. Test role permissions
+echo "🧪 Testing role-based permissions..."
+node scripts/security/test-role-permissions.js
+
+# 6. Generate security report
+echo "📊 Generating security compliance report..."
+node scripts/security/generate-security-report.js
+
+echo "✅ Admin onboarding security validation complete!"
+echo "🛡️ All financial data properly protected from unauthorized access"
