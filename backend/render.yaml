@@ -3,7 +3,7 @@ services:
     name: phv-budget-tracker-backend
     env: node
     plan: free
-    buildCommand: npm install && npm run build && npx prisma generate && npx prisma migrate deploy
+    buildCommand: npm run build:production
     startCommand: npm start
     envVars:
       - key: NODE_ENV
