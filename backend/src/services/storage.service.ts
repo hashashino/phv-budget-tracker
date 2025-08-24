@@ -1,8 +1,8 @@
 import AWS from 'aws-sdk';
 import fs from 'fs/promises';
 import path from 'path';
-import { config } from '@/config/environment';
-import { logger } from '@/utils/logger';
+import { config } from '../config/environment';
+import { logger } from '../utils/logger';
 import sharp from 'sharp';
 
 interface UploadOptions {

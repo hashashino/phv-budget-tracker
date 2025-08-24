@@ -1,8 +1,8 @@
-import { logger } from '@/utils/logger';
-import { emailService } from '@/services/email.service';
-import { storageService } from '@/services/storage.service';
+import { logger } from '../utils/logger';
+import { emailService } from '../services/email.service';
+import { storageService } from '../services/storage.service';
 // import { ocrService } from '@/services/ocr.service';
-import { redisClient } from '@/utils/redis';
+import { redisClient } from '../utils/redis';
 
 export async function initializeServices(): Promise<void> {
   logger.info('Initializing services...');
