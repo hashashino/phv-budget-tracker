@@ -5,9 +5,10 @@
   "main": "dist/server.js",
   "scripts": {
     "dev": "nodemon src/server.ts",
-    "build": "tsc",
+    "build": "tsc && npx prisma generate",
     "build:production": "npm install && tsc && npx prisma generate && npx prisma migrate deploy",
     "start": "node dist/server.js",
+    "heroku-postbuild": "npm run build && npx prisma migrate deploy",
     "start:dev": "ts-node src/server.ts",
     "test": "jest",
     "test:watch": "jest --watch",
