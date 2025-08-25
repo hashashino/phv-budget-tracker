@@ -5,8 +5,7 @@ node_modules/
 .env.development.local
 .env.test.local
 .env.production.local
-src/
-prisma/
 __tests__/
 *.test.ts
 *.spec.ts
+dist/
