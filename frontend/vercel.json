@@ -1,15 +1,14 @@
 {
   "name": "phv-budget-tracker-frontend",
   "version": 2,
-  "functions": {
-    "app/api/**/*.js": {
-      "runtime": "nodejs18.x"
-    }
-  },
+  "framework": null,
+  "installCommand": "npm install --legacy-peer-deps",
+  "buildCommand": "npm run web:build",
+  "outputDirectory": "dist",
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/"
+      "destination": "/index.html"
     }
   ],
   "headers": [
@@ -18,10 +17,12 @@
       "headers": [
         {
           "key": "X-Frame-Options",
-          "value": "DENY"
+          "value": "SAMEORIGIN"
         }
       ]
     }
   ],
-  "installCommand": "npm install --legacy-peer-deps"
+  "env": {
+    "EXPO_PUBLIC_API_URL": "https://phv-budget-tracker.onrender.com"
+  }
 }

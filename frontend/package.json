@@ -10,6 +10,7 @@
     "web": "npx expo start --web",
     "build": "npx expo build",
     "build:web": "npx expo start --web --no-dev --minify",
+    "web:build": "npx expo export -p web",
     "build:android": "npx expo build:android",
     "build:ios": "npx expo build:ios",
     "test": "jest",
