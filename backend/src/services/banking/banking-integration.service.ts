@@ -1,12 +1,12 @@
-import { prisma } from '@/config/database';
-import { logger } from '@/utils/logger';
+import { prisma } from '../../config/database';
+import { logger } from '../../utils/logger';
 import { BankName, TransactionType } from '@prisma/client';
 import { DBSBankService } from './dbs.service';
 import { OCBCBankService } from './ocbc.service';
 import { UOBBankService } from './uob.service';
 import { BaseBankService, BankAccount, BankTransaction } from './base-bank.service';
-import { NotFoundError, ValidationError } from '@/middleware/errorHandler';
-import { cacheService } from '@/utils/redis';
+import { NotFoundError, ValidationError } from '../../middleware/errorHandler';
+import { cacheService } from '../../utils/redis';
 
 export interface BankConnectionData {
   bankName: BankName;

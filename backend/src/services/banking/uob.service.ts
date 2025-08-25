@@ -1,5 +1,5 @@
 import { BaseBankService, BankAccount, BankTransaction, BankConnectionConfig } from './base-bank.service';
-import { config } from '@/config/environment';
+import { config } from '../../config/environment';
 
 export class UOBBankService extends BaseBankService {
   constructor() {

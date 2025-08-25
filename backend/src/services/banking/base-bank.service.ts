@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
-import { logger } from '@/utils/logger';
-import { cacheService } from '@/utils/redis';
+import { logger } from '../../utils/logger';
+import { cacheService } from '../../utils/redis';
 
 export interface BankAccount {
   accountNumber: string;
