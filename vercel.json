@@ -10,5 +10,8 @@
       "source": "/(.*)",
       "destination": "/index.html"
     }
-  ]
+  ],
+  "env": {
+    "EXPO_PUBLIC_API_URL": "https://phv-budget-tracker-backend-4tz6mkp26-shalihins-projects.vercel.app"
+  }
 }
