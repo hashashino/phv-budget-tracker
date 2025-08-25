@@ -21,7 +21,7 @@ module.exports = async (req, res) => {
     // Root route
     if (pathname === '/') {
       return res.status(200).json({
-        message: 'PHV Budget Tracker API is working online!',
+        message: 'PHV Budget Tracker API v2 is working online!',
         timestamp: new Date().toISOString(),
         database: 'Connected to Neon PostgreSQL'
       });
