@@ -1,0 +1,51 @@
+const express = require('express');
+const cors = require('cors');
+const helmet = require('helmet');
+const morgan = require('morgan');
+const compression = require('compression');
+const rateLimit = require('express-rate-limit');
+
+// Create Express app
+const app = express();
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Middleware
+app.use(helmet());
+app.use(compression());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'https://phv-budget-tracker.vercel.app',
+  credentials: true
+}));
+app.use(morgan('combined'));
+app.use(limiter);
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true }));
+
+// Health check route
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
+// Simple API routes
+app.get('/', (req, res) => {
+  res.json({ message: 'PHV Budget Tracker API is running on Vercel!' });
+});
+
+app.get('/api', (req, res) => {
+  res.json({ message: 'PHV Budget Tracker API is running on Vercel!' });
+});
+
+// Export the Express API
+module.exports = app;

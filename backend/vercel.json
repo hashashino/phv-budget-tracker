@@ -1,21 +1,13 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "api/index.ts",
-      "use": "@vercel/node@3.0.0"
+  "functions": {
+    "api/index.js": {
+      "maxDuration": 60
     }
-  ],
-  "routes": [
+  },
+  "rewrites": [
     {
-      "src": "/(.*)",
-      "dest": "/api/index.ts"
+      "source": "/(.*)",
+      "destination": "/api"
     }
-  ],
-  "env": {
-    "NODE_ENV": "production",
-    "JWT_SECRET": "development-secret-key-please-change-in-production-32-chars",
-    "FRONTEND_URL": "https://phv-budget-tracker.vercel.app",
-    "ENCRYPTION_KEY": "development-encryption-key-32ch"
-  }
+  ]
 }
