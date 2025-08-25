@@ -1,28 +1,17 @@
 {
-  "name": "phv-budget-tracker-frontend",
   "version": 2,
-  "framework": null,
-  "installCommand": "npm install --legacy-peer-deps",
+  "name": "phv-budget-tracker-frontend",
   "buildCommand": "npm run web:build",
   "outputDirectory": "dist",
+  "installCommand": "npm install --legacy-peer-deps",
+  "framework": null,
   "rewrites": [
     {
       "source": "/(.*)",
       "destination": "/index.html"
     }
   ],
-  "headers": [
-    {
-      "source": "/.*",
-      "headers": [
-        {
-          "key": "X-Frame-Options",
-          "value": "SAMEORIGIN"
-        }
-      ]
-    }
-  ],
   "env": {
-    "EXPO_PUBLIC_API_URL": "https://phv-budget-tracker.onrender.com"
+    "EXPO_PUBLIC_API_URL": "https://phv-budget-tracker-backend-4tz6mkp26-shalihins-projects.vercel.app"
   }
 }
