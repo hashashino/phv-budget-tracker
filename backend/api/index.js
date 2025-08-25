@@ -18,14 +18,10 @@ const limiter = rateLimit({
 });
 
 // Middleware
-app.use(helmet());
-app.use(compression());
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'https://phv-budget-tracker.vercel.app',
+  origin: true, // Allow all origins for now
   credentials: true
 }));
-app.use(morgan('combined'));
-app.use(limiter);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
