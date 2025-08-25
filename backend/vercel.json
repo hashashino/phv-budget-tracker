@@ -1,4 +1,7 @@
 {
+  "version": 2,
+  "buildCommand": "",
+  "installCommand": "npm install --legacy-peer-deps",
   "functions": {
     "api/index.js": {
       "maxDuration": 60
