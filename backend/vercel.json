@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "name": "phv-budget-tracker-backend",
+  "buildCommand": "npm run build",
+  "installCommand": "npm install --legacy-peer-deps",
+  "functions": {
+    "src/server.ts": {
+      "runtime": "@vercel/node"
+    }
+  },
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/src/server.ts"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production",
+    "JWT_SECRET": "development-secret-key-please-change-in-production-32-chars",
+    "FRONTEND_URL": "https://phv-budget-tracker.vercel.app",
+    "ENCRYPTION_KEY": "development-encryption-key-32ch"
+  }
+}
