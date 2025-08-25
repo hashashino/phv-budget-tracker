@@ -5,16 +5,16 @@ dotenv.config();
 
 const envSchema = Joi.object({
   // Database
-  DATABASE_URL: Joi.string().required(),
+  DATABASE_URL: Joi.string().optional(),
   
   // JWT
-  JWT_SECRET: Joi.string().min(32).required(),
+  JWT_SECRET: Joi.string().min(32).default('development-secret-key-please-change-in-production-32-chars'),
   JWT_EXPIRE: Joi.string().default('7d'),
   
   // Server
   PORT: Joi.number().default(3000),
   NODE_ENV: Joi.string().valid('development', 'production', 'test').default('development'),
-  FRONTEND_URL: Joi.string().uri().required(),
+  FRONTEND_URL: Joi.string().uri().default('http://localhost:3000'),
   
   // File Storage
   STORAGE_TYPE: Joi.string().valid('local', 's3').default('local'),
@@ -67,7 +67,7 @@ const envSchema = Joi.object({
   REDIS_URL: Joi.string().uri().default('redis://localhost:6379'),
   
   // Encryption
-  ENCRYPTION_KEY: Joi.string().length(32).required(),
+  ENCRYPTION_KEY: Joi.string().length(32).default('development-encryption-key-32ch'),
   
   // SingPass
   SINGPASS_CLIENT_ID: Joi.string().optional(),

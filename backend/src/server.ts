@@ -118,15 +118,23 @@ process.on('SIGINT', async () => {
 // Start server
 async function startServer() {
   try {
-    // Initialize services
-    await initializeServices();
+    // Initialize services (make it optional)
+    try {
+      await initializeServices();
+    } catch (serviceError) {
+      logger.warn('Some services failed to initialize, continuing with limited functionality');
+    }
     
     // Connect to database (optional for development)
-    try {
-      await prisma.$connect();
-      logger.info('Connected to database');
-    } catch (dbError) {
-      logger.warn('Database connection failed, some features will be limited');
+    if (process.env.DATABASE_URL) {
+      try {
+        await prisma.$connect();
+        logger.info('Connected to database');
+      } catch (dbError) {
+        logger.warn('Database connection failed, some features will be limited');
+      }
+    } else {
+      logger.warn('No DATABASE_URL provided, running in limited mode without database');
     }
 
     app.listen(Number(PORT), '0.0.0.0', () => {
