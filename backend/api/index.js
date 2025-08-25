@@ -1,40 +1,51 @@
-module.exports = (req, res) => {
+module.exports = async (req, res) => {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Content-Type', 'application/json');
   
   // Handle preflight OPTIONS requests
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
 
-  const url = new URL(req.url, 'https://' + req.headers.host);
-  const pathname = url.pathname;
-  const method = req.method;
+  try {
+    const pathname = req.url || '/';
+    const method = req.method;
 
-  // Parse JSON body for POST requests
-  let body = '';
-  if (method === 'POST') {
-    return new Promise((resolve) => {
-      req.on('data', chunk => {
-        body += chunk.toString();
-      });
-      req.on('end', () => {
-        let parsedBody = {};
-        try {
-          parsedBody = JSON.parse(body);
-        } catch (e) {
-          // Invalid JSON
-        }
-        handleRequest(req, res, pathname, method, parsedBody);
-        resolve();
-      });
-    });
+    // Parse JSON body for POST requests
+    let body = {};
+    if (method === 'POST' && req.body) {
+      body = req.body;
+    } else if (method === 'POST') {
+      // Manual body parsing for raw requests
+      const rawBody = await getRawBody(req);
+      try {
+        body = JSON.parse(rawBody);
+      } catch (e) {
+        body = {};
+      }
+    }
+    
+    handleRequest(req, res, pathname, method, body);
+  } catch (error) {
+    console.error('Function error:', error);
+    return res.status(500).json({ error: 'Internal server error' });
   }
-  
-  handleRequest(req, res, pathname, method, {});
 };
+
+async function getRawBody(req) {
+  return new Promise((resolve) => {
+    let data = '';
+    req.on('data', chunk => {
+      data += chunk.toString();
+    });
+    req.on('end', () => {
+      resolve(data);
+    });
+  });
+}
 
 function handleRequest(req, res, pathname, method, body) {
   res.setHeader('Content-Type', 'application/json');
