@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { body, query, param } from 'express-validator';
-import * as earningsController from '@/controllers/earnings.controller';
-import { validate } from '@/middleware/validation';
+import * as earningsController from '../controllers/earnings.controller';
+import { validate } from '../middleware/validation';
 
 const router = Router();
 

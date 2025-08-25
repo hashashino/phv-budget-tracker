@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { prisma } from '@/config/database';
-import { asyncHandler, NotFoundError } from '@/middleware/errorHandler';
-import { logger } from '@/utils/logger';
-// import { ocrService } from '@/services/ocr.service';
-import { storageService } from '@/services/storage.service';
+import { prisma } from '../config/database';
+import { asyncHandler, NotFoundError } from '../middleware/errorHandler';
+import { logger } from '../utils/logger';
+// import { ocrService } from '../services/ocr.service';
+import { storageService } from '../services/storage.service';
 
 export const getReceipts = asyncHandler(async (req: Request, res: Response): Promise<void> => {
   const userId = req.user!.userId;

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { authService, RegisterData, LoginData } from '@/services/auth.service';
-import { asyncHandler } from '@/middleware/errorHandler';
-import { logger } from '@/utils/logger';
+import { authService, RegisterData, LoginData } from '../services/auth.service';
+import { asyncHandler } from '../middleware/errorHandler';
+import { logger } from '../utils/logger';
 
 export const register = asyncHandler(async (req: Request, res: Response): Promise<void> => {
   const userData: RegisterData = req.body;

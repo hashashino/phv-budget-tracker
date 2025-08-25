@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { body, query } from 'express-validator';
-import * as expensesController from '@/controllers/expenses.controller';
-import { validate } from '@/middleware/validation';
-import { apiRateLimit } from '@/middleware/rateLimit';
+import * as expensesController from '../controllers/expenses.controller';
+import { validate } from '../middleware/validation';
+import { apiRateLimit } from '../middleware/rateLimit';
 
 const router = Router();
 

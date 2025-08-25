@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { asyncHandler } from '@/middleware/errorHandler';
-import { logger } from '@/utils/logger';
-import { prisma } from '@/config/database';
-import { storageService } from '@/services/storage.service';
+import { asyncHandler } from '../middleware/errorHandler';
+import { logger } from '../utils/logger';
+import { prisma } from '../config/database';
+import { storageService } from '../services/storage.service';
 import { CategoryType, PlatformType, VehicleType, FuelType } from '@prisma/client';
 
 export const getAllUsers = asyncHandler(async (req: Request, res: Response): Promise<void> => {

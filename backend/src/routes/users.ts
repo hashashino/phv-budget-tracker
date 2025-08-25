@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import { body, query, param } from 'express-validator';
 import multer from 'multer';
-import * as usersController from '@/controllers/users.controller';
-import { validate } from '@/middleware/validation';
-import { authMiddleware, requireAdmin } from '@/middleware/auth';
+import * as usersController from '../controllers/users.controller';
+import { validate } from '../middleware/validation';
+import { authMiddleware, requireAdmin } from '../middleware/auth';
 
 const router = Router();
 

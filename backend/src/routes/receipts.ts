@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { body, query, param } from 'express-validator';
 import multer from 'multer';
-import * as receiptsController from '@/controllers/receipts.controller';
-import { validate } from '@/middleware/validation';
+import * as receiptsController from '../controllers/receipts.controller';
+import { validate } from '../middleware/validation';
 
 const router = Router();
 

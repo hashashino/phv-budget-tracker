@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import rateLimit from 'express-rate-limit';
-import { cacheService } from '@/utils/redis';
+import { cacheService } from '../utils/redis';
 import { TooManyRequestsError } from './errorHandler';
-import { logger } from '@/utils/logger';
+import { logger } from '../utils/logger';
 
 // Standard rate limit middleware using express-rate-limit
 export const createRateLimit = (options: {

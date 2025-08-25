@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { prisma } from '@/config/database';
-import { asyncHandler, NotFoundError, ValidationError } from '@/middleware/errorHandler';
-import { logger } from '@/utils/logger';
-// import { gstService } from '@/services/gst.service';
+import { prisma } from '../config/database';
+import { asyncHandler, NotFoundError, ValidationError } from '../middleware/errorHandler';
+import { logger } from '../utils/logger';
+// import { gstService } from '../services/gst.service';
 
 export const getExpenses = asyncHandler(async (req: Request, res: Response): Promise<void> => {
   const userId = req.user!.userId;

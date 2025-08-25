@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { asyncHandler } from '@/middleware/errorHandler';
-import { logger } from '@/utils/logger';
-import { prisma } from '@/config/database';
+import { asyncHandler } from '../middleware/errorHandler';
+import { logger } from '../utils/logger';
+import { prisma } from '../config/database';
 import { DebtType } from '@prisma/client';
 
 export const getDebts = asyncHandler(async (req: Request, res: Response): Promise<void> => {
