@@ -1,73 +1,102 @@
-const express = require('express');
-const cors = require('cors');
-
-// Create Express app
-const app = express();
-
-// Middleware
-app.use(cors({
-  origin: true,
-  credentials: true
-}));
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true }));
-
-// Health check route
-app.get('/api/health', (req, res) => {
-  res.status(200).json({
-    status: 'OK',
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development',
-    database: process.env.DATABASE_URL ? 'Connected' : 'Not configured'
-  });
-});
-
-// Debug route
-app.get('/api/debug', (req, res) => {
-  res.json({
-    environment: process.env.NODE_ENV,
-    database: !!process.env.DATABASE_URL,
-    message: 'Backend is working'
-  });
-});
-
-// Simple test auth routes for now
-app.post('/api/auth/login', (req, res) => {
-  const { email, password } = req.body;
+module.exports = (req, res) => {
+  // Enable CORS
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   
-  if (email && password) {
-    res.json({
-      user: { email, id: '1', firstName: 'Test', lastName: 'User' },
-      token: 'test-token-' + Date.now(),
-      refreshToken: 'refresh-token-' + Date.now()
-    });
-  } else {
-    res.status(400).json({ error: 'Email and password required' });
+  // Handle preflight OPTIONS requests
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
   }
-});
 
-app.post('/api/auth/register', (req, res) => {
-  const { email, password, firstName, lastName } = req.body;
+  const url = new URL(req.url, 'https://' + req.headers.host);
+  const pathname = url.pathname;
+  const method = req.method;
+
+  // Parse JSON body for POST requests
+  let body = '';
+  if (method === 'POST') {
+    return new Promise((resolve) => {
+      req.on('data', chunk => {
+        body += chunk.toString();
+      });
+      req.on('end', () => {
+        let parsedBody = {};
+        try {
+          parsedBody = JSON.parse(body);
+        } catch (e) {
+          // Invalid JSON
+        }
+        handleRequest(req, res, pathname, method, parsedBody);
+        resolve();
+      });
+    });
+  }
   
-  if (email && password && firstName && lastName) {
-    res.json({
-      user: { email, id: '2', firstName, lastName },
-      token: 'test-token-' + Date.now(),
-      refreshToken: 'refresh-token-' + Date.now()
+  handleRequest(req, res, pathname, method, {});
+};
+
+function handleRequest(req, res, pathname, method, body) {
+  res.setHeader('Content-Type', 'application/json');
+
+  // Root route
+  if (pathname === '/' && method === 'GET') {
+    return res.status(200).json({
+      message: 'PHV Budget Tracker API is running on Vercel!',
+      timestamp: new Date().toISOString(),
+      database: process.env.DATABASE_URL ? 'Connected' : 'Not configured'
     });
-  } else {
-    res.status(400).json({ error: 'All fields required' });
   }
-});
 
-// Default response
-app.get('/', (req, res) => {
-  res.json({ 
-    message: 'PHV Budget Tracker API is running on Vercel!',
-    timestamp: new Date().toISOString(),
-    database: process.env.DATABASE_URL ? 'Connected' : 'Not configured'
-  });
-});
+  // Health check
+  if (pathname === '/api/health' && method === 'GET') {
+    return res.status(200).json({
+      status: 'OK',
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV || 'development',
+      database: process.env.DATABASE_URL ? 'Connected' : 'Not configured'
+    });
+  }
 
-// For Vercel serverless functions
-module.exports = app;
+  // Debug route
+  if (pathname === '/api/debug' && method === 'GET') {
+    return res.status(200).json({
+      environment: process.env.NODE_ENV,
+      database: !!process.env.DATABASE_URL,
+      message: 'Backend is working'
+    });
+  }
+
+  // Login endpoint
+  if (pathname === '/api/auth/login' && method === 'POST') {
+    const { email, password } = body;
+    
+    if (email && password) {
+      return res.status(200).json({
+        user: { email, id: '1', firstName: 'Test', lastName: 'User' },
+        token: 'test-token-' + Date.now(),
+        refreshToken: 'refresh-token-' + Date.now()
+      });
+    } else {
+      return res.status(400).json({ error: 'Email and password required' });
+    }
+  }
+
+  // Register endpoint
+  if (pathname === '/api/auth/register' && method === 'POST') {
+    const { email, password, firstName, lastName } = body;
+    
+    if (email && password && firstName && lastName) {
+      return res.status(200).json({
+        user: { email, id: '2', firstName, lastName },
+        token: 'test-token-' + Date.now(),
+        refreshToken: 'refresh-token-' + Date.now()
+      });
+    } else {
+      return res.status(400).json({ error: 'All fields required' });
+    }
+  }
+
+  // 404 for unmatched routes
+  return res.status(404).json({ error: 'Route not found' });
+}
