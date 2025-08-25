@@ -1,13 +1,13 @@
 # PHV Budget Tracker 🚗💰
 
-A mobile-first budget tracking application designed specifically for Private Hire Vehicle (PHV) drivers in Singapore.
+A full-stack budget tracking application designed specifically for Private Hire Vehicle (PHV) drivers in Singapore.
 
-## 🚀 **Current Status: FULLY FUNCTIONAL**
+## 🚀 **Current Status: RESTRUCTURED & DEPLOYED**
 
-- ✅ **Backend API**: Running on port 3000
-- ✅ **Frontend (Expo)**: Running on port 8081  
-- ✅ **Database**: PostgreSQL + Redis operational
-- ✅ **Full Stack**: Ready for development and testing
+- ✅ **Backend API**: Deployed to Render.com (https://phv-budget-tracker.onrender.com)
+- ✅ **Frontend (React Native)**: Separated into `/frontend` directory
+- ✅ **Project Structure**: Clean separation between backend and frontend
+- ✅ **Development**: Both services can run independently
 
 📋 **Setup Documentation**: See [EXPO_SETUP_GUIDE.md](./EXPO_SETUP_GUIDE.md) for detailed setup instructions and troubleshooting.
 
@@ -40,27 +40,31 @@ A mobile-first budget tracking application designed specifically for Private Hir
 - Docker (for PostgreSQL and Redis)
 - **No global Expo CLI needed** (use npx)
 
-### **✅ CURRENT WORKING SETUP**
+### **✅ NEW RESTRUCTURED SETUP**
 
 ```bash
-# 1. Install dependencies (IMPORTANT: use legacy peer deps)
-npm install --legacy-peer-deps
+# 1. Install root dependencies
+npm install
 
-# 2. Start Docker services
-docker-compose up -d
+# 2. Install backend dependencies
+cd backend && npm install
 
-# 3. Run database migrations
-cd backend && npx prisma migrate dev
+# 3. Install frontend dependencies  
+cd ../frontend && npm install --legacy-peer-deps
 
 # 4. Start backend (Terminal 1)
 cd backend && npm run dev
 
-# 5. Start frontend (Terminal 2) 
-npx expo start
+# 5. Start frontend (Terminal 2)
+cd frontend && npm start
+
+# OR start both from root:
+npm run dev
 
 # Access:
-# Backend API: http://localhost:3000
-# Metro Bundler: http://localhost:8081
+# Backend API: http://localhost:3000 (development)
+# Backend API: https://phv-budget-tracker.onrender.com (production)
+# Frontend: http://localhost:8081 (Expo Metro)
 ```
 
 ⚠️ **CRITICAL**: Always use `--legacy-peer-deps` for npm install due to React 19/Redux Toolkit compatibility issues.
@@ -82,21 +86,26 @@ npm run db:seed
 
 ```
 phv-budget-tracker/
-├── mobile/                 # React Native mobile app
+├── frontend/              # React Native/Expo mobile app
 │   ├── src/
-│   │   ├── components/     # Reusable UI components
-│   │   ├── screens/        # App screens
-│   │   ├── services/       # API clients and utilities
-│   │   ├── store/          # Redux state management
-│   │   └── types/          # TypeScript definitions
-├── backend/               # Node.js API server
+│   │   ├── components/    # Reusable UI components
+│   │   ├── screens/       # App screens
+│   │   ├── services/      # API clients and utilities
+│   │   ├── store/         # Redux state management
+│   │   └── types/         # TypeScript definitions
+│   ├── App.tsx           # Main app component
+│   ├── app.json          # Expo configuration
+│   └── package.json      # Frontend dependencies
+├── backend/              # Node.js API server
 │   ├── src/
-│   │   ├── controllers/    # Route handlers
-│   │   ├── services/       # Business logic
-│   │   ├── models/         # Database models
-│   │   └── routes/         # API routes
-├── shared/                # Shared types and utilities
-└── docs/                  # Documentation
+│   │   ├── controllers/  # Route handlers
+│   │   ├── services/     # Business logic
+│   │   ├── middleware/   # Express middleware
+│   │   └── routes/       # API routes
+│   ├── prisma/          # Database schema and migrations
+│   └── package.json     # Backend dependencies
+├── package.json         # Root orchestration scripts
+└── README.md           # This file
 ```
 
 ## Development
