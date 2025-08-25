@@ -2,12 +2,14 @@
 
 A full-stack budget tracking application designed specifically for Private Hire Vehicle (PHV) drivers in Singapore.
 
-## 🚀 **Current Status: RESTRUCTURED & DEPLOYED**
+## 🚀 **Current Status: FULLY DEPLOYED ON VERCEL**
 
-- ✅ **Backend API**: Deployed to Render.com (https://phv-budget-tracker.onrender.com)
-- ✅ **Frontend (React Native)**: Separated into `/frontend` directory
-- ✅ **Project Structure**: Clean separation between backend and frontend
-- ✅ **Development**: Both services can run independently
+- ✅ **Backend API**: Deployed to Vercel (https://phv-budget-tracker-backend-4tz6mkp26-shalihins-projects.vercel.app)
+- ✅ **Frontend (Web)**: Deployed to Vercel (https://phv-budget-tracker.vercel.app)
+- ✅ **Mobile App**: React Native with Expo (connects to deployed backend)
+- ✅ **Database**: PostgreSQL hosted online
+- ✅ **Redis Cache**: Upstash Redis for session management
+- ✅ **Full Stack**: End-to-end deployment complete
 
 📋 **Setup Documentation**: See [EXPO_SETUP_GUIDE.md](./EXPO_SETUP_GUIDE.md) for detailed setup instructions and troubleshooting.
 
@@ -63,8 +65,9 @@ npm run dev
 
 # Access:
 # Backend API: http://localhost:3000 (development)
-# Backend API: https://phv-budget-tracker.onrender.com (production)
-# Frontend: http://localhost:8081 (Expo Metro)
+# Backend API: https://phv-budget-tracker-backend-4tz6mkp26-shalihins-projects.vercel.app (production)
+# Frontend (Web): https://phv-budget-tracker.vercel.app (production)
+# Frontend (Mobile): http://localhost:8081 (Expo Metro for development)
 ```
 
 ⚠️ **CRITICAL**: Always use `--legacy-peer-deps` for npm install due to React 19/Redux Toolkit compatibility issues.

@@ -14,6 +14,21 @@ This is a PHV Budget Tracker - a mobile-first budget tracking application design
 - **Banking Integration**: Region-specific banking APIs (DBS/OCBC/UOB for SG, Maybank/CIMB for MY, etc.)
 - **Regulatory Compliance**: GDPR-ready, country-specific driver licensing formats
 
+## 🚀 **DEPLOYMENT STATUS**
+
+### **Production URLs**
+- **Backend API**: https://phv-budget-tracker-backend-4tz6mkp26-shalihins-projects.vercel.app
+- **Frontend Web**: https://phv-budget-tracker.vercel.app  
+- **Database**: PostgreSQL (hosted online)
+- **Cache**: Upstash Redis for session management
+
+### **Infrastructure** 
+- **Platform**: Vercel (both frontend and backend)
+- **Backend**: Node.js serverless functions
+- **Frontend**: React Native web build with Expo
+- **Database**: PostgreSQL with Prisma ORM
+- **Cache**: Upstash Redis for authentication and rate limiting
+
 ## Development Commands
 
 ### Quick Start
