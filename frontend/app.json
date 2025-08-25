@@ -43,8 +43,10 @@
     },
     "web": {
       "favicon": "./assets/favicon.png",
-      "bundler": "metro"
+      "bundler": "webpack",
+      "output": "static"
     },
+    "platforms": ["ios", "android", "web"],
     "plugins": [
       [
         "expo-camera",
