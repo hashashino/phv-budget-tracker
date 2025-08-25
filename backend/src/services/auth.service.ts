@@ -1,11 +1,11 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { User } from '@prisma/client';
-import { config } from '@/config/environment';
-import { prisma } from '@/config/database';
-import { UnauthorizedError, ConflictError, NotFoundError } from '@/middleware/errorHandler';
-import { logger } from '@/utils/logger';
-import { cacheService } from '@/utils/redis';
+import { config } from '../config/environment';
+import { prisma } from '../config/database';
+import { UnauthorizedError, ConflictError, NotFoundError } from '../middleware/errorHandler';
+import { logger } from '../utils/logger';
+import { cacheService } from '../utils/redis';
 
 export interface TokenPayload {
   userId: string;

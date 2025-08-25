@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { authService } from '@/services/auth.service';
+import { authService } from '../services/auth.service';
 import { UnauthorizedError } from './errorHandler';
-import { logger } from '@/utils/logger';
+import { logger } from '../utils/logger';
 
 // Extend Express Request interface to include user with role
 declare global {
