@@ -1,14 +1,11 @@
 {
   "version": 2,
-  "name": "phv-budget-tracker-backend",
-  "buildCommand": "npm run build",
-  "installCommand": "npm install --legacy-peer-deps",
-  "outputDirectory": null,
-  "functions": {
-    "api/index.ts": {
-      "runtime": "@vercel/node@3.0.0"
+  "builds": [
+    {
+      "src": "api/index.ts",
+      "use": "@vercel/node@3.0.0"
     }
-  },
+  ],
   "routes": [
     {
       "src": "/(.*)",
