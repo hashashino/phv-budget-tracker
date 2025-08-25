@@ -27,6 +27,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // Health check route
 app.get('/health', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.status(200).json({
     status: 'OK',
     timestamp: new Date().toISOString(),
@@ -36,11 +39,21 @@ app.get('/health', (req, res) => {
 
 // Simple API routes
 app.get('/', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.json({ message: 'PHV Budget Tracker API is running on Vercel!' });
 });
 
 app.get('/api', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.json({ message: 'PHV Budget Tracker API is running on Vercel!' });
+});
+
+// Handle OPTIONS requests
+app.options('*', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.status(200).end();
 });
 
 // Export the Express API
