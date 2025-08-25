@@ -28,11 +28,30 @@ module.exports = (req, res) => {
   }
   
   if (pathname === '/api/auth/login' && req.method === 'POST') {
-    return res.status(200).json({
-      user: { email: 'test@example.com', id: '1', firstName: 'Test', lastName: 'User' },
-      token: 'test-token-' + Date.now(),
-      refreshToken: 'refresh-token-' + Date.now()
+    // For POST requests, we need to parse the body
+    let body = '';
+    req.on('data', chunk => {
+      body += chunk.toString();
     });
+    req.on('end', () => {
+      try {
+        const parsedBody = JSON.parse(body);
+        const { email, password } = parsedBody;
+        
+        if (email && password) {
+          return res.status(200).json({
+            user: { email, id: '1', firstName: 'Test', lastName: 'User' },
+            token: 'test-token-' + Date.now(),
+            refreshToken: 'refresh-token-' + Date.now()
+          });
+        } else {
+          return res.status(400).json({ error: 'Email and password required' });
+        }
+      } catch (e) {
+        return res.status(400).json({ error: 'Invalid JSON body' });
+      }
+    });
+    return; // Don't continue to the 404
   }
   
   return res.status(404).json({ error: 'Route not found' });
