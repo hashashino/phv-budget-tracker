@@ -6,6 +6,7 @@ const redis = new Redis(config.redis.url, {
   enableReadyCheck: false,
   maxRetriesPerRequest: 3,
   lazyConnect: true,
+  family: 6, // Enable IPv6 if needed
 });
 
 redis.on('connect', () => {
