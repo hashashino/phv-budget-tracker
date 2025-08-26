@@ -1,202 +1,208 @@
-# PHV Budget Tracker 🚗💰
+# 🚗 PHV Budget Tracker
 
-A full-stack budget tracking application designed specifically for Private Hire Vehicle (PHV) drivers in Singapore.
+> **Premium financial management for private hire vehicle drivers**
 
-## 🚀 **Current Status: FULLY DEPLOYED ON VERCEL**
+A comprehensive, full-stack budget tracking application designed specifically for PHV (Private Hire Vehicle) drivers across Singapore and Southeast Asia, with global expansion capabilities.
 
-- ✅ **Backend API**: Deployed to Vercel (https://phv-budget-tracker-backend-4tz6mkp26-shalihins-projects.vercel.app)
-- ✅ **Frontend (Web)**: Deployed to Vercel (https://phv-budget-tracker.vercel.app)
-- ✅ **Mobile App**: React Native with Expo (connects to deployed backend)
-- ✅ **Database**: PostgreSQL hosted online
-- ✅ **Redis Cache**: Upstash Redis for session management
-- ✅ **Full Stack**: End-to-end deployment complete
+[![React Native](https://img.shields.io/badge/React%20Native-0.79-blue.svg)](https://reactnative.dev/)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue.svg)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.1-38B2AC.svg)](https://tailwindcss.com/)
+[![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black.svg)](https://vercel.com/)
 
-📋 **Setup Documentation**: See [EXPO_SETUP_GUIDE.md](./EXPO_SETUP_GUIDE.md) for detailed setup instructions and troubleshooting.
+## ✨ Features
 
-## Features
+### 🎯 **Core Functionality**
+- **Real-time Expense Tracking** - Categorized spending with automatic GST calculations
+- **Earnings Management** - Multi-platform income tracking (Grab, TADA, Gojek, etc.)
+- **OCR Receipt Processing** - Google Cloud Vision API integration
+- **Multi-Currency Support** - SGD, MYR, THB, IDR, USD, AUD with live conversion
+- **Regional Tax Compliance** - GST, VAT, SST support across supported regions
 
-### 📱 Core Functionality
-- **Manual Expense Tracking**: Quick entry for fuel, maintenance, tolls, and other PHV expenses
-- **Earnings Screenshot Processing**: OCR technology to extract earnings from Grab, TADA, Gojek screenshots
-- **Debt Clearing Projections**: Smart algorithms to plan debt payoff strategies
-- **Banking Integration**: Connect with DBS, OCBC, UOB, and POSB accounts
+### 💼 **Advanced Features**
+- **Banking Integration** - OAuth 2.0 connections with major regional banks
+- **Debt Management** - Multi-debt tracking with payoff projections
+- **Analytics Dashboard** - Visual spending insights and earning trends
+- **Multi-regional Support** - Singapore, Malaysia, Thailand, Indonesia, US, Australia
 
-### 🇸🇬 Singapore-Specific Features
-- SGD currency with GST calculations
-- PHV platform integrations (Grab, TADA, Gojek, ComfortDelGro)
-- Local fuel station and parking expense categories
-- Singapore banking API connectivity
+### 🎨 **Modern Design**
+- **Premium UI** - NativeWind (Tailwind) + React Native Paper
+- **Dark/Light Mode** - Automatic theme switching
+- **Responsive Design** - Optimized for web and mobile
+- **Smooth Animations** - React Native Reanimated v3
 
-### 🚀 Technology Stack
-- **Frontend**: React Native with Expo, TypeScript
-- **Backend**: Node.js, Express, TypeScript
-- **Database**: PostgreSQL with Prisma ORM
-- **OCR**: Google Cloud Vision API
-- **Authentication**: OAuth 2.0 for banking integrations
-
-## Quick Start
+## 🚀 Quick Start
 
 ### Prerequisites
-- **Node.js 22.18.0+** (tested and working)
-- npm or yarn  
-- Docker (for PostgreSQL and Redis)
-- **No global Expo CLI needed** (use npx)
+- Node.js 18+
+- npm 8+
+- Git
 
-### **✅ NEW RESTRUCTURED SETUP**
+### Installation
 
 ```bash
-# 1. Install root dependencies
-npm install
+# Clone the repository
+git clone https://github.com/hashashino/phv-budget-tracker.git
+cd phv-budget-tracker
 
-# 2. Install backend dependencies
-cd backend && npm install
+# Setup entire project (installs all dependencies)
+npm run setup
 
-# 3. Install frontend dependencies  
-cd ../frontend && npm install --legacy-peer-deps
-
-# 4. Start backend (Terminal 1)
-cd backend && npm run dev
-
-# 5. Start frontend (Terminal 2)
-cd frontend && npm start
-
-# OR start both from root:
+# Start development servers
 npm run dev
-
-# Access:
-# Backend API: http://localhost:3000 (development)
-# Backend API: https://phv-budget-tracker-backend-4tz6mkp26-shalihins-projects.vercel.app (production)
-# Frontend (Web): https://phv-budget-tracker.vercel.app (production)
-# Frontend (Mobile): http://localhost:8081 (Expo Metro for development)
 ```
 
-⚠️ **CRITICAL**: Always use `--legacy-peer-deps` for npm install due to React 19/Redux Toolkit compatibility issues.
+This will start:
+- **Backend API** on `http://localhost:3000`
+- **Frontend Web** on `http://localhost:19006` (Expo web)
 
-### Database Setup
+### Individual Commands
 
 ```bash
-# Using Docker
-npm run docker:up
+# Backend only
+npm run dev:backend
 
-# Run migrations
-npm run db:migrate
+# Frontend only  
+npm run dev:frontend
 
-# Seed initial data
-npm run db:seed
+# Web version only
+npm run dev:web
 ```
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 phv-budget-tracker/
-├── frontend/              # React Native/Expo mobile app
-│   ├── src/
-│   │   ├── components/    # Reusable UI components
-│   │   ├── screens/       # App screens
-│   │   ├── services/      # API clients and utilities
-│   │   ├── store/         # Redux state management
-│   │   └── types/         # TypeScript definitions
-│   ├── App.tsx           # Main app component
-│   ├── app.json          # Expo configuration
-│   └── package.json      # Frontend dependencies
-├── backend/              # Node.js API server
-│   ├── src/
-│   │   ├── controllers/  # Route handlers
-│   │   ├── services/     # Business logic
-│   │   ├── middleware/   # Express middleware
-│   │   └── routes/       # API routes
-│   ├── prisma/          # Database schema and migrations
-│   └── package.json     # Backend dependencies
-├── package.json         # Root orchestration scripts
-└── README.md           # This file
+├── 📁 backend/          # Node.js API server
+│   ├── api/             # Vercel serverless functions
+│   ├── src/             # Source code
+│   │   ├── controllers/ # Route controllers
+│   │   ├── services/    # Business logic
+│   │   ├── middleware/  # Express middleware
+│   │   └── utils/       # Utilities
+│   ├── prisma/          # Database schema & migrations
+│   └── vercel.json      # Vercel deployment config
+│
+├── 📁 frontend/         # React Native app
+│   ├── src/             # Source code
+│   │   ├── components/  # Reusable UI components
+│   │   ├── screens/     # App screens
+│   │   ├── navigation/  # Navigation setup
+│   │   ├── hooks/       # Custom React hooks
+│   │   ├── store/       # Redux state management
+│   │   └── services/    # API services
+│   ├── assets/          # Images, fonts, etc.
+│   └── tailwind.config.js # Tailwind configuration
+│
+├── 📁 docs/             # Documentation
+├── 📁 scripts/          # Build and utility scripts
+└── docker-compose.yml   # Local database setup
 ```
 
-## Development
+## 🛠 Development
 
 ### Available Scripts
 
-- `npm run dev` - Start both backend and mobile in development mode
-- `npm run build` - Build both applications for production
-- `npm run test` - Run all tests
-- `npm run lint` - Lint all code
-- `npm run type-check` - TypeScript type checking
-
-### Environment Variables
-
-Create `.env` files in both `backend/` and `mobile/` directories:
-
 ```bash
-# backend/.env
-DATABASE_URL=postgresql://...
-JWT_SECRET=your-jwt-secret
-GOOGLE_CLOUD_VISION_API_KEY=your-api-key
-DBS_API_KEY=your-dbs-key
-OCBC_API_KEY=your-ocbc-key
-UOB_API_KEY=your-uob-key
+# Development
+npm run dev              # Start both backend and frontend
+npm run dev:backend      # Backend only
+npm run dev:frontend     # Frontend only
 
-# mobile/.env
-API_BASE_URL=http://localhost:3000
-EXPO_PUBLIC_API_URL=http://localhost:3000
+# Building
+npm run build            # Build both projects
+npm run build:backend    # Backend only
+npm run build:frontend   # Frontend only
+
+# Testing
+npm run test             # Run all tests
+npm run test:coverage    # Test coverage reports
+
+# Code Quality
+npm run lint             # Lint all code
+npm run lint:fix         # Fix linting issues
+npm run type-check       # TypeScript type checking
+
+# Database
+npm run db:migrate       # Run Prisma migrations
+npm run db:seed          # Seed database with sample data
+npm run db:studio        # Open Prisma Studio
+
+# Docker
+npm run docker:up        # Start PostgreSQL, Redis, pgAdmin
+npm run docker:down      # Stop Docker services
+
+# Deployment
+npm run deploy:frontend  # Deploy frontend to Vercel
+npm run deploy:backend   # Deploy backend to Vercel
 ```
 
-## PHV Driver Specific Features
+### Environment Setup
 
-### Earnings Processing
-- Screenshot OCR for daily earnings from all major platforms
-- Automatic categorization of income vs expenses
-- Commission and incentive tracking
-- Multi-platform earnings comparison
+1. **Backend** (`.env` in `/backend`):
+```env
+DATABASE_URL=postgresql://username:password@localhost:5432/phv_budget_db
+JWT_SECRET=your-super-secure-jwt-secret
+GOOGLE_CLOUD_VISION_API_KEY=your-google-vision-api-key
+```
 
-### Expense Categories
-- **Vehicle**: Fuel, maintenance, repairs, insurance
-- **Operations**: Tolls, parking, car wash
-- **Platform**: Commission fees, rental costs
-- **Personal**: Meals, phone bills, other expenses
+2. **Frontend** (`.env` in `/frontend`):
+```env
+EXPO_PUBLIC_API_URL=https://phv-budget-tracker-backend.vercel.app
+API_BASE_URL=https://phv-budget-tracker-backend.vercel.app/api
+```
 
-### Debt Management
-- Multiple debt tracking (car loans, credit cards, personal loans)
-- Payoff strategy recommendations (avalanche vs snowball)
-- Progress tracking with visual projections
-- Interest savings calculations
+## 🌍 Multi-Regional Support
 
-## Banking Integration
+### Supported Regions
+- 🇸🇬 **Singapore** - Primary market
+- 🇲🇾 **Malaysia** - GST/SST compliance
+- 🇹🇭 **Thailand** - VAT support
+- 🇮🇩 **Indonesia** - PPN tax calculations
+- 🇺🇸 **United States** - State tax variations
+- 🇦🇺 **Australia** - Regional tax compliance
 
-### Supported Banks
-- **DBS Bank**: Transaction analytics, account balances
-- **OCBC Bank**: Account data, payment history
-- **UOB Bank**: Real-time notifications, transaction history
-- **POSB**: Account integration via OCBC platform
+### Banking Integrations
+- **Singapore**: DBS, OCBC, UOB, POSB
+- **Malaysia**: Maybank, CIMB, Public Bank, Hong Leong
+- **Global**: Extensible banking adapter framework
 
-### API Integration Flow
-1. OAuth 2.0 authentication with bank
-2. Secure token storage and refresh
-3. Automatic transaction categorization
-4. Real-time balance updates
+### PHV Platforms
+- **Southeast Asia**: Grab, TADA, Gojek
+- **Global**: Uber, Lyft, Bolt, local platforms
 
-## Security & Privacy
+## 📱 Demo
 
-- All financial data encrypted at rest and in transit
-- OAuth 2.0 for secure banking connections
-- No storage of banking credentials
-- Regular security audits and updates
-- GDPR/PDPA compliant data handling
+### Live Applications
+- **Web App**: https://phv-budget-tracker.vercel.app
+- **API**: https://phv-budget-tracker-backend.vercel.app
 
-## Contributing
+### Demo Credentials
+```
+Email: demo@phvbudget.com
+Password: password123
+```
+
+## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Run tests and linting
-5. Submit a pull request
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## License
+## 📄 License
 
-MIT License - see [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Support
+## 🙏 Acknowledgments
 
-For support or feature requests, please create an issue in the GitHub repository.
+- Built for the PHV driver community in Southeast Asia
+- Powered by modern web technologies
+- Designed with financial privacy and security in mind
 
 ---
 
-**Built for Singapore PHV drivers, by developers who understand the hustle. 🚗💪**
+<div align="center">
+  <strong>Made with ❤️ for PHV drivers everywhere</strong>
+</div>
