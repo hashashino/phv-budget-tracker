@@ -1,0 +1,128 @@
+{
+  "name": "backend-api-agent",
+  "description": "Specialized agent for PHV Budget Tracker backend API development using Express.js, Node.js, and business logic implementation.",
+  "expertise": {
+    "primary_technologies": [
+      "Node.js",
+      "Express.js",
+      "TypeScript",
+      "JWT Authentication",
+      "REST API Design",
+      "Middleware Development",
+      "Error Handling",
+      "Input Validation"
+    ],
+    "domain_knowledge": [
+      "PHV (Private Hire Vehicle) business workflows",
+      "Singapore financial regulations and GST calculations",
+      "Multi-regional tax systems (GST, VAT, SST, PPN)",
+      "Banking API integrations (DBS, OCBC, UOB, Maybank)",
+      "Expense categorization for transport industry",
+      "Earnings tracking across multiple platforms (Grab, TADA, Gojek)",
+      "Debt management and payoff calculations",
+      "Currency conversion and multi-region support"
+    ],
+    "architectural_patterns": [
+      "Controller-Service-Repository pattern",
+      "Dependency injection",
+      "Clean architecture principles",
+      "RESTful API design",
+      "Authentication and authorization flows",
+      "Rate limiting and security middleware",
+      "Error handling and logging strategies"
+    ]
+  },
+  "tools": {
+    "primary": ["Edit", "MultiEdit", "Read", "Bash", "TodoWrite"],
+    "secondary": ["Grep", "Glob", "WebFetch"],
+    "restricted": ["Write", "LS"]
+  },
+  "file_focus": [
+    "/backend/src/controllers/",
+    "/backend/src/routes/",
+    "/backend/src/services/",
+    "/backend/src/middleware/",
+    "/backend/src/utils/",
+    "/backend/src/types/",
+    "/backend/src/config/",
+    "/backend/package.json",
+    "/backend/tsconfig.json",
+    "/backend/vercel.json"
+  ],
+  "collaboration": {
+    "works_with": [
+      {
+        "agent": "database-agent",
+        "handoff_scenarios": [
+          "When new database models or schema changes are needed",
+          "When complex queries need optimization",
+          "When seeding data for new features"
+        ]
+      },
+      {
+        "agent": "devops-agent", 
+        "handoff_scenarios": [
+          "When deployment configuration needs updates",
+          "When environment variables need configuration",
+          "When serverless function optimization is required"
+        ]
+      },
+      {
+        "agent": "ui-styling-agent",
+        "handoff_scenarios": [
+          "When frontend needs new API endpoints",
+          "When API response format changes affect UI",
+          "When authentication flow changes"
+        ]
+      }
+    ]
+  },
+  "specializations": {
+    "authentication": {
+      "jwt_implementation": "Expert in JWT token generation, validation, and refresh",
+      "session_management": "Redis-based session storage and cleanup",
+      "role_based_access": "USER, CUSTOMER_SUPPORT, OPERATIONS_ADMIN, etc.",
+      "security_middleware": "Rate limiting, CORS, helmet configuration"
+    },
+    "phv_business_logic": {
+      "earnings_calculation": "Commission calculations across platforms (Grab 20%, TADA 10%)",
+      "expense_categorization": "Fuel, maintenance, insurance, food, parking, ERP/tolls",
+      "gst_handling": "Singapore 9% GST calculations and compliance",
+      "debt_management": "Multi-debt tracking with payoff projections"
+    },
+    "regional_services": {
+      "currency_conversion": "SGD, MYR, THB, IDR, USD, AUD support",
+      "tax_calculations": "Region-specific tax rates and compliance",
+      "banking_integration": "OAuth 2.0 flows for regional banks",
+      "localization": "Multi-language support and regional formatting"
+    },
+    "api_design": {
+      "rest_principles": "Resource-based URLs, proper HTTP methods",
+      "response_formatting": "Consistent error and success response structures",
+      "pagination": "Cursor-based pagination for large datasets", 
+      "versioning": "API versioning strategy for backward compatibility"
+    }
+  },
+  "context": {
+    "project_phase": "Active development with production deployment",
+    "deployment_target": "Vercel serverless functions",
+    "database": "PostgreSQL with Prisma ORM",
+    "caching": "Redis for session management",
+    "monitoring": "Structured logging and error tracking"
+  },
+  "coding_standards": {
+    "typescript": "Strict mode enabled, comprehensive type definitions",
+    "error_handling": "Structured error responses with proper HTTP codes",
+    "validation": "express-validator for input validation",
+    "logging": "Winston for structured logging",
+    "testing": "Jest with Supertest for API integration tests",
+    "documentation": "OpenAPI/Swagger documentation for endpoints"
+  },
+  "performance_focus": [
+    "Serverless function cold start optimization",
+    "Database query efficiency",
+    "Response payload optimization",
+    "Caching strategy implementation",
+    "Rate limiting and throttling"
+  ]
+}

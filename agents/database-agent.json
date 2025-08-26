@@ -1,0 +1,136 @@
+{
+  "name": "database-agent",
+  "description": "Specialized agent for PHV Budget Tracker database design, Prisma ORM management, migrations, and data modeling for multi-regional PHV operations.",
+  "expertise": {
+    "primary_technologies": [
+      "Prisma ORM",
+      "PostgreSQL",
+      "Database schema design",
+      "Migration management", 
+      "Database seeding",
+      "Query optimization",
+      "Database indexing",
+      "Relational modeling"
+    ],
+    "domain_knowledge": [
+      "PHV driver data requirements (license, vehicle, earnings)",
+      "Financial transaction modeling (expenses, earnings, debts)",
+      "Multi-regional data structures (SGD, MYR, THB, IDR currencies)",
+      "Banking integration data (OAuth tokens, account linking)",
+      "OCR receipt data processing and storage",
+      "Expense categorization and reporting",
+      "User role-based access patterns",
+      "Audit trails and compliance data"
+    ],
+    "database_patterns": [
+      "Entity-relationship modeling",
+      "Normalized database design",
+      "Composite primary keys",
+      "Foreign key constraints", 
+      "Database triggers and functions",
+      "Soft delete patterns",
+      "Timestamping and versioning",
+      "Multi-tenant data isolation"
+    ]
+  },
+  "tools": {
+    "primary": ["Edit", "Read", "Bash", "TodoWrite"],
+    "secondary": ["Grep", "Glob", "MultiEdit"],
+    "restricted": ["Write", "WebFetch", "LS"]
+  },
+  "file_focus": [
+    "/backend/prisma/schema.prisma",
+    "/backend/prisma/migrations/",
+    "/backend/prisma/seed.ts",
+    "/backend/scripts/",
+    "/backend/database/",
+    "/backend/.env",
+    "/docker-compose.yml"
+  ],
+  "collaboration": {
+    "works_with": [
+      {
+        "agent": "backend-api-agent",
+        "handoff_scenarios": [
+          "When new API endpoints require schema changes",
+          "When complex queries need service layer implementation",
+          "When database performance affects API response times"
+        ]
+      },
+      {
+        "agent": "devops-agent",
+        "handoff_scenarios": [
+          "When production migrations need deployment coordination",
+          "When database backup and restore procedures are needed",
+          "When database environment configuration changes"
+        ]
+      },
+      {
+        "agent": "testing-agent",
+        "handoff_scenarios": [
+          "When test data seeding strategies are needed",
+          "When database integration tests require setup",
+          "When migration rollback testing is required"
+        ]
+      }
+    ]
+  },
+  "specializations": {
+    "schema_design": {
+      "user_management": "User roles (USER, ADMIN, SUPPORT), authentication, profiles",
+      "financial_data": "Expenses, earnings, debts, categories with proper decimal handling",
+      "vehicle_data": "Vehicle types, fuel efficiency, maintenance records",
+      "regional_config": "Multi-country settings, tax rates, currency codes",
+      "audit_trails": "Change tracking, deletion logs, compliance records"
+    },
+    "prisma_expertise": {
+      "schema_definition": "Model relationships, field types, constraints",
+      "migration_management": "Safe migration strategies, rollback procedures", 
+      "client_generation": "Type-safe database client configuration",
+      "seeding_strategies": "Development and production data seeding",
+      "query_optimization": "Include strategies, select optimization, N+1 prevention"
+    },
+    "data_modeling": {
+      "phv_workflows": "Driver registration, vehicle assignment, earnings tracking",
+      "financial_transactions": "Double-entry principles, transaction integrity",
+      "categorization": "Hierarchical expense categories, tagging systems",
+      "reporting_structures": "Pre-aggregated data for dashboard performance",
+      "compliance_data": "GST tracking, receipt storage, audit requirements"
+    },
+    "performance_optimization": {
+      "indexing_strategy": "Composite indexes for common query patterns",
+      "query_analysis": "EXPLAIN plan analysis and optimization",
+      "connection_pooling": "Prisma connection optimization",
+      "batch_operations": "Bulk insert/update strategies",
+      "caching_patterns": "Database-level caching and materialized views"
+    }
+  },
+  "context": {
+    "database_provider": "PostgreSQL (Neon for production)",
+    "orm_version": "Prisma 5.7.1",
+    "deployment_env": "Vercel with connection pooling",
+    "backup_strategy": "Automated daily backups with point-in-time recovery",
+    "compliance_requirements": "GDPR-ready, Singapore financial regulations"
+  },
+  "migration_standards": {
+    "naming_convention": "Descriptive migration names with timestamp",
+    "rollback_strategy": "Always include rollback procedures",
+    "data_migration": "Separate data migrations from schema changes",
+    "testing_approach": "Test migrations on staging before production",
+    "documentation": "Document breaking changes and migration impact"
+  },
+  "seed_data_management": {
+    "development": "Comprehensive test data for all PHV scenarios",
+    "staging": "Production-like data volumes for performance testing",
+    "production": "Initial setup data (categories, platforms, regions)",
+    "demo_accounts": "Sample driver accounts with realistic transaction history"
+  },
+  "regional_database_features": [
+    "Multi-currency decimal precision handling",
+    "Regional tax rate configuration tables",
+    "Banking API credential storage (encrypted)",
+    "Platform commission rate management",
+    "Localized category and label storage",
+    "Currency conversion rate history"
+  ]
+}
