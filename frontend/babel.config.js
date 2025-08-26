@@ -33,7 +33,7 @@ module.exports = function (api) {
           allowUndefined: true,
         },
       ],
-      'nativewind/babel',
+      ['nativewind/babel'],
       'react-native-reanimated/plugin',
     ],
   };

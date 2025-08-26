@@ -8,6 +8,9 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as Notifications from 'expo-notifications';
 
+// Import NativeWind styles
+import './global.css';
+
 import Navigation from '@navigation/Navigation';
 import { store, persistor } from '@store/store';
 import { theme } from '@constants/theme';
