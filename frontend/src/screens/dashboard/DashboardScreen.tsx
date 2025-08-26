@@ -22,13 +22,9 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { MainTabParamList } from '@types/index';
-import { LinearGradient } from 'expo-linear-gradient';
 
 import { useAppSelector } from '@store/store';
 import { APP_CONFIG } from '@constants/index';
-import { useAnimation } from '@hooks/useAnimation';
-import { useTailwind } from '@hooks/useTailwind';
-import { useCurrency } from '@hooks/useCurrency';
 
 type DashboardScreenNavigationProp = BottomTabNavigationProp<MainTabParamList, 'Dashboard'>;
 
@@ -36,10 +32,6 @@ const DashboardScreen: React.FC = () => {
   const theme = useTheme();
   const navigation = useNavigation<DashboardScreenNavigationProp>();
   const { user } = useAppSelector(state => state.auth);
-  const tw = useTailwind();
-  const { formatCurrency, formatEarnings, formatExpenses } = useCurrency();
-  const { fadeInUp, scaleIn, slideInRight } = useAnimation();
-  
   const [refreshing, setRefreshing] = React.useState(false);
   const [showQuickActions, setShowQuickActions] = useState(false);
 
@@ -62,269 +54,355 @@ const DashboardScreen: React.FC = () => {
     avgTripEarning: 33.33,
   };
 
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return 'Good morning';
-    if (hour < 17) return 'Good afternoon';
-    return 'Good evening';
-  };
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.background,
+    },
+    scrollView: {
+      flex: 1,
+      padding: 16,
+    },
+    greeting: {
+      marginBottom: 20,
+    },
+    greetingText: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      color: theme.colors.onBackground,
+      marginBottom: 4,
+    },
+    dateText: {
+      fontSize: 14,
+      color: theme.colors.onSurfaceVariant,
+    },
+    summaryRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginBottom: 16,
+    },
+    summaryCard: {
+      flex: 1,
+      marginHorizontal: 4,
+      padding: 16,
+    },
+    cardIcon: {
+      alignSelf: 'center',
+      marginBottom: 8,
+    },
+    cardTitle: {
+      fontSize: 12,
+      textAlign: 'center',
+      marginBottom: 4,
+      color: theme.colors.onSurfaceVariant,
+    },
+    cardAmount: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      textAlign: 'center',
+    },
+    earningAmount: {
+      color: theme.colors.primary,
+    },
+    expenseAmount: {
+      color: theme.colors.error,
+    },
+    netIncomeCard: {
+      marginBottom: 16,
+      padding: 20,
+      backgroundColor: theme.colors.primaryContainer,
+    },
+    netIncomeTitle: {
+      fontSize: 16,
+      color: theme.colors.onPrimaryContainer,
+      marginBottom: 8,
+    },
+    netIncomeAmount: {
+      fontSize: 32,
+      fontWeight: 'bold',
+      color: theme.colors.onPrimaryContainer,
+    },
+    netIncomeSubtitle: {
+      fontSize: 12,
+      color: theme.colors.onPrimaryContainer,
+      opacity: 0.8,
+    },
+    statsCard: {
+      marginBottom: 16,
+      padding: 16,
+    },
+    statsTitle: {
+      fontSize: 16,
+      fontWeight: '600',
+      marginBottom: 12,
+    },
+    statsRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginBottom: 8,
+    },
+    statsLabel: {
+      fontSize: 14,
+      color: theme.colors.onSurfaceVariant,
+    },
+    statsValue: {
+      fontSize: 14,
+      fontWeight: '500',
+      color: theme.colors.onSurface,
+    },
+    chipContainer: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 8,
+      marginTop: 12,
+    },
+    fab: {
+      position: 'absolute',
+      right: 16,
+      bottom: 16,
+    },
+    quickActionsModal: {
+      backgroundColor: 'white',
+      margin: 20,
+      borderRadius: 12,
+      paddingTop: 20,
+    },
+    quickActionsTitle: {
+      fontSize: 18,
+      fontWeight: '600',
+      textAlign: 'center',
+      marginBottom: 16,
+      color: theme.colors.onSurface,
+    },
+    quickActionItem: {
+      paddingVertical: 16,
+      paddingHorizontal: 20,
+    },
+    cancelButton: {
+      margin: 16,
+      marginTop: 8,
+    },
+  });
 
   return (
-    <View className="flex-1">
-      <LinearGradient
-        colors={['#f0f9ff', '#e0f2fe', '#bae6fd']}
-        className="flex-1"
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
+    <View style={styles.container}>
+      <ScrollView
+        style={styles.scrollView}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        showsVerticalScrollIndicator={false}
       >
-        <ScrollView
-          className="flex-1 px-4 pt-12"
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 100 }}
-        >
-          {/* Premium Greeting Header */}
-          <View className="mb-8" style={fadeInUp}>
-            <Text className="text-2xl font-bold text-primary-900 mb-1">
-              {getGreeting()}, {user?.name?.split(' ')[0] || 'Driver'}!
-            </Text>
-            <Text className="text-base text-primary-600">
-              {new Date().toLocaleDateString('en-SG', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
-            </Text>
-          </View>
-
-          {/* Today's Summary Cards */}
-          <View className="flex-row gap-3 mb-6">
-            <View 
-              className="flex-1 bg-white/70 backdrop-blur-md rounded-2xl p-5 border border-white/50"
-              style={scaleIn}
-            >
-              <View className="items-center">
-                <View className="w-12 h-12 bg-success-500/20 rounded-full items-center justify-center mb-3">
-                  <MaterialCommunityIcons
-                    name="trending-up"
-                    size={24}
-                    color="#10b981"
-                  />
-                </View>
-                <Text className="text-xs text-gray-600 mb-1 text-center">Today's Earnings</Text>
-                <Text className="text-xl font-bold text-success-600 text-center">
-                  {formatEarnings(dashboardData.todayEarnings)}
-                </Text>
-              </View>
-            </View>
-            
-            <View 
-              className="flex-1 bg-white/70 backdrop-blur-md rounded-2xl p-5 border border-white/50"
-              style={scaleIn}
-            >
-              <View className="items-center">
-                <View className="w-12 h-12 bg-danger-500/20 rounded-full items-center justify-center mb-3">
-                  <MaterialCommunityIcons
-                    name="trending-down"
-                    size={24}
-                    color="#ef4444"
-                  />
-                </View>
-                <Text className="text-xs text-gray-600 mb-1 text-center">Today's Expenses</Text>
-                <Text className="text-xl font-bold text-danger-600 text-center">
-                  {formatExpenses(dashboardData.todayExpenses)}
-                </Text>
-              </View>
-            </View>
-          </View>
-
-          {/* Premium Net Income Card */}
-          <LinearGradient
-            colors={['#1a365d', '#0369a1']}
-            className="rounded-3xl p-6 mb-6"
-            style={slideInRight}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-          >
-            <View className="flex-row items-center justify-between mb-4">
-              <Text className="text-white/80 text-base">This Month's Net Income</Text>
-              <View className="w-10 h-10 bg-white/20 rounded-full items-center justify-center">
-                <MaterialCommunityIcons name="wallet" size={20} color="white" />
-              </View>
-            </View>
-            <Text className="text-3xl font-bold text-white mb-2">
-              {formatCurrency(dashboardData.netIncome)}
-            </Text>
-            <Text className="text-white/70 text-sm">
-              {formatCurrency(dashboardData.monthlyEarnings)} earned • {formatCurrency(dashboardData.monthlyExpenses)} spent
-            </Text>
-            <View className="absolute -right-4 -top-4 w-20 h-20 bg-secondary-500/20 rounded-full" />
-            <View className="absolute -left-2 -bottom-2 w-16 h-16 bg-accent-500/20 rounded-full" />
-          </LinearGradient>
-
-          {/* Weekly Statistics Glass Card */}
-          <View 
-            className="bg-white/80 backdrop-blur-md rounded-3xl p-6 border border-white/60"
-            style={fadeInUp}
-          >
-            <View className="flex-row items-center justify-between mb-5">
-              <Text className="text-xl font-bold text-primary-900">This Week</Text>
-              <View className="flex-row gap-2">
-                <View className="bg-success-500/20 px-3 py-1 rounded-full">
-                  <Text className="text-xs font-medium text-success-700">+12%</Text>
-                </View>
-                <View className="bg-primary-500/20 px-3 py-1 rounded-full">
-                  <Text className="text-xs font-medium text-primary-700">{dashboardData.totalTrips} trips</Text>
-                </View>
-              </View>
-            </View>
-            
-            <View className="space-y-4">
-              <View className="flex-row justify-between items-center">
-                <View className="flex-row items-center">
-                  <View className="w-2 h-2 bg-success-500 rounded-full mr-3" />
-                  <Text className="text-gray-700 font-medium">Total Earnings</Text>
-                </View>
-                <Text className="text-lg font-bold text-success-600">
-                  {formatEarnings(dashboardData.weeklyEarnings)}
-                </Text>
-              </View>
-              
-              <View className="flex-row justify-between items-center">
-                <View className="flex-row items-center">
-                  <View className="w-2 h-2 bg-danger-500 rounded-full mr-3" />
-                  <Text className="text-gray-700 font-medium">Total Expenses</Text>
-                </View>
-                <Text className="text-lg font-bold text-danger-600">
-                  {formatExpenses(dashboardData.weeklyExpenses)}
-                </Text>
-              </View>
-              
-              <View className="h-px bg-gray-200 my-2" />
-              
-              <View className="flex-row justify-between items-center">
-                <Text className="text-gray-600">Average per Trip</Text>
-                <Text className="text-base font-semibold text-primary-700">
-                  {formatCurrency(dashboardData.avgTripEarning)}
-                </Text>
-              </View>
-            </View>
-          </View>
-        </ScrollView>
-
-        {/* Premium Floating Action Button */}
-        <View className="absolute bottom-6 right-6">
-          <LinearGradient
-            colors={['#f97316', '#ea580c']}
-            className="rounded-2xl"
-            style={{
-              shadowColor: '#f97316',
-              shadowOffset: { width: 0, height: 8 },
-              shadowOpacity: 0.3,
-              shadowRadius: 16,
-              elevation: 12,
-            }}
-          >
-            <Button
-              mode="contained"
-              icon="plus"
-              onPress={() => setShowQuickActions(true)}
-              className="px-6 py-2"
-              buttonColor="transparent"
-              textColor="#ffffff"
-            >
-              Add Entry
-            </Button>
-          </LinearGradient>
+        {/* Greeting */}
+        <View style={styles.greeting}>
+          <Title style={styles.greetingText}>
+            Good morning, {user?.name?.split(' ')[0] || 'Driver'}!
+          </Title>
+          <Paragraph style={styles.dateText}>
+            {new Date().toLocaleDateString('en-SG', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })}
+          </Paragraph>
         </View>
 
-        {/* Premium Quick Actions Modal */}
-        <Portal>
-          <Modal
-            visible={showQuickActions}
-            onDismiss={() => setShowQuickActions(false)}
-            contentContainerStyle={{
-              backgroundColor: 'rgba(255,255,255,0.95)',
-              backdropFilter: 'blur(20px)',
-              margin: 20,
-              borderRadius: 24,
-              borderWidth: 1,
-              borderColor: 'rgba(255,255,255,0.2)',
+        {/* Today's Summary */}
+        <View style={styles.summaryRow}>
+          <Card style={styles.summaryCard}>
+            <MaterialCommunityIcons
+              name="cash-plus"
+              size={24}
+              color={theme.colors.primary}
+              style={styles.cardIcon}
+            />
+            <Paragraph style={styles.cardTitle}>Today's Earnings</Paragraph>
+            <Title style={[styles.cardAmount, styles.earningAmount]}>
+              {APP_CONFIG.CURRENCY_SYMBOL}{dashboardData.todayEarnings.toFixed(2)}
+            </Title>
+          </Card>
+          
+          <Card style={styles.summaryCard}>
+            <MaterialCommunityIcons
+              name="cash-minus"
+              size={24}
+              color={theme.colors.error}
+              style={styles.cardIcon}
+            />
+            <Paragraph style={styles.cardTitle}>Today's Expenses</Paragraph>
+            <Title style={[styles.cardAmount, styles.expenseAmount]}>
+              {APP_CONFIG.CURRENCY_SYMBOL}{dashboardData.todayExpenses.toFixed(2)}
+            </Title>
+          </Card>
+        </View>
+
+        {/* Net Income Card */}
+        <Card style={styles.netIncomeCard}>
+          <Paragraph style={styles.netIncomeTitle}>This Month's Net Income</Paragraph>
+          <Title style={styles.netIncomeAmount}>
+            {APP_CONFIG.CURRENCY_SYMBOL}{dashboardData.netIncome.toFixed(2)}
+          </Title>
+          <Paragraph style={styles.netIncomeSubtitle}>
+            {APP_CONFIG.CURRENCY_SYMBOL}{dashboardData.monthlyEarnings.toFixed(2)} earned • {APP_CONFIG.CURRENCY_SYMBOL}{dashboardData.monthlyExpenses.toFixed(2)} spent
+          </Paragraph>
+        </Card>
+
+        {/* Weekly Statistics */}
+        <Card style={styles.statsCard}>
+          <Title style={styles.statsTitle}>This Week</Title>
+          <View style={styles.statsRow}>
+            <Paragraph style={styles.statsLabel}>Total Earnings</Paragraph>
+            <Paragraph style={[styles.statsValue, styles.earningAmount]}>
+              {APP_CONFIG.CURRENCY_SYMBOL}{dashboardData.weeklyEarnings.toFixed(2)}
+            </Paragraph>
+          </View>
+          <View style={styles.statsRow}>
+            <Paragraph style={styles.statsLabel}>Total Expenses</Paragraph>
+            <Paragraph style={[styles.statsValue, styles.expenseAmount]}>
+              {APP_CONFIG.CURRENCY_SYMBOL}{dashboardData.weeklyExpenses.toFixed(2)}
+            </Paragraph>
+          </View>
+          <View style={styles.statsRow}>
+            <Paragraph style={styles.statsLabel}>Total Trips</Paragraph>
+            <Paragraph style={styles.statsValue}>
+              {dashboardData.totalTrips}
+            </Paragraph>
+          </View>
+          <View style={styles.statsRow}>
+            <Paragraph style={styles.statsLabel}>Average per Trip</Paragraph>
+            <Paragraph style={styles.statsValue}>
+              {APP_CONFIG.CURRENCY_SYMBOL}{dashboardData.avgTripEarning.toFixed(2)}
+            </Paragraph>
+          </View>
+          
+          <View style={styles.chipContainer}>
+            <Chip icon="trending-up" mode="outlined" compact>
+              +12% vs last week
+            </Chip>
+            <Chip icon="car" mode="outlined" compact>
+              {dashboardData.totalTrips} trips
+            </Chip>
+          </View>
+        </Card>
+      </ScrollView>
+
+      {/* Quick Action FAB */}
+      <FAB
+        style={styles.fab}
+        icon="plus"
+        label="Add Entry"
+        onPress={() => setShowQuickActions(true)}
+      />
+
+      {/* Quick Actions Modal */}
+      <Portal>
+        <Modal
+          visible={showQuickActions}
+          onDismiss={() => setShowQuickActions(false)}
+          contentContainerStyle={styles.quickActionsModal}
+        >
+          <Text style={styles.quickActionsTitle}>Add New Entry</Text>
+          
+          <List.Item
+            title="Add Expense"
+            description="Track fuel, maintenance, meals, etc."
+            left={(props) => (
+              <MaterialCommunityIcons
+                {...props}
+                name="cash-minus"
+                size={24}
+                color={theme.colors.error}
+              />
+            )}
+            right={(props) => (
+              <MaterialCommunityIcons
+                {...props}
+                name="chevron-right"
+                size={24}
+                color={theme.colors.onSurfaceVariant}
+              />
+            )}
+            onPress={() => {
+              setShowQuickActions(false);
+              // @ts-ignore - Navigation to nested stack navigator
+              navigation.navigate('ExpensesStack', {
+                screen: 'ExpenseEntry',
+                params: {},
+              });
             }}
+            style={styles.quickActionItem}
+          />
+          
+          <List.Item
+            title="Add Earning"
+            description="Log trip earnings, bonuses, incentives"
+            left={(props) => (
+              <MaterialCommunityIcons
+                {...props}
+                name="cash-plus"
+                size={24}
+                color={theme.colors.primary}
+              />
+            )}
+            right={(props) => (
+              <MaterialCommunityIcons
+                {...props}
+                name="chevron-right"
+                size={24}
+                color={theme.colors.onSurfaceVariant}
+              />
+            )}
+            onPress={() => {
+              setShowQuickActions(false);
+              // @ts-ignore - Navigation to nested stack navigator
+              navigation.navigate('EarningsStack', {
+                screen: 'EarningEntry',
+                params: {},
+              });
+            }}
+            style={styles.quickActionItem}
+          />
+          
+          <List.Item
+            title="Capture Receipt"
+            description="Photo scan for automatic processing"
+            left={(props) => (
+              <MaterialCommunityIcons
+                {...props}
+                name="camera"
+                size={24}
+                color={theme.colors.tertiary}
+              />
+            )}
+            right={(props) => (
+              <MaterialCommunityIcons
+                {...props}
+                name="chevron-right"
+                size={24}
+                color={theme.colors.onSurfaceVariant}
+              />
+            )}
+            onPress={() => {
+              setShowQuickActions(false);
+              // @ts-ignore - Navigation to nested stack navigator
+              navigation.navigate('ReceiptsStack', {
+                screen: 'ReceiptCapture',
+                params: {},
+              });
+            }}
+            style={styles.quickActionItem}
+          />
+          
+          <Button
+            mode="outlined"
+            onPress={() => setShowQuickActions(false)}
+            style={styles.cancelButton}
           >
-            <View className="p-6">
-              <Text className="text-xl font-bold text-center mb-6 text-primary-900">
-                Add New Entry
-              </Text>
-              
-              <View className="space-y-4">
-                <Button
-                  mode="outlined"
-                  icon="minus-circle"
-                  onPress={() => {
-                    setShowQuickActions(false);
-                    navigation.navigate('ExpensesStack', {
-                      screen: 'ExpenseEntry',
-                      params: {},
-                    } as never);
-                  }}
-                  className="py-2 border-2 border-danger-200"
-                  textColor="#ef4444"
-                  style={{ borderRadius: 16 }}
-                >
-                  <Text className="text-base font-medium">Add Expense</Text>
-                </Button>
-                
-                <Button
-                  mode="outlined"
-                  icon="plus-circle"
-                  onPress={() => {
-                    setShowQuickActions(false);
-                    navigation.navigate('EarningsStack', {
-                      screen: 'EarningEntry',
-                      params: {},
-                    } as never);
-                  }}
-                  className="py-2 border-2 border-success-200"
-                  textColor="#10b981"
-                  style={{ borderRadius: 16 }}
-                >
-                  <Text className="text-base font-medium">Add Earning</Text>
-                </Button>
-                
-                <Button
-                  mode="outlined"
-                  icon="camera"
-                  onPress={() => {
-                    setShowQuickActions(false);
-                    navigation.navigate('ReceiptsStack', {
-                      screen: 'ReceiptCapture',
-                      params: {},
-                    } as never);
-                  }}
-                  className="py-2 border-2 border-accent-200"
-                  textColor="#14b8a6"
-                  style={{ borderRadius: 16 }}
-                >
-                  <Text className="text-base font-medium">Capture Receipt</Text>
-                </Button>
-              </View>
-              
-              <Button
-                mode="text"
-                onPress={() => setShowQuickActions(false)}
-                className="mt-4"
-                textColor="#6b7280"
-              >
-                Cancel
-              </Button>
-            </View>
-          </Modal>
-        </Portal>
-      </LinearGradient>
+            Cancel
+          </Button>
+        </Modal>
+      </Portal>
     </View>
   );
 };
