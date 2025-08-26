@@ -12,48 +12,39 @@
     "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install",
     "postinstall": "npm run setup:git-hooks",
     "setup:git-hooks": "npx husky install || true",
-    
     "dev": "concurrently -n \"API,WEB\" -c \"cyan,magenta\" \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:backend": "cd backend && npm run dev",
-    "dev:frontend": "cd frontend && npm start",
+    "dev:frontend": "cd frontend && npm expo start",
     "dev:web": "cd frontend && npm run web",
-    
     "build": "npm run build:backend && npm run build:frontend",
     "build:backend": "cd backend && npm run build",
     "build:frontend": "cd frontend && npm run build:web",
-    
     "test": "npm run test:backend && npm run test:frontend",
     "test:backend": "cd backend && npm run test",
     "test:frontend": "cd frontend && npm run test",
     "test:coverage": "npm run test:backend:coverage && npm run test:frontend:coverage",
     "test:backend:coverage": "cd backend && npm run test:coverage",
     "test:frontend:coverage": "cd frontend && npm run test:coverage",
-    
     "lint": "npm run lint:backend && npm run lint:frontend",
     "lint:backend": "cd backend && npm run lint",
     "lint:frontend": "cd frontend && npm run lint",
     "lint:fix": "npm run lint:backend:fix && npm run lint:frontend:fix",
     "lint:backend:fix": "cd backend && npm run lint:fix",
     "lint:frontend:fix": "cd frontend && npm run lint:fix",
-    
     "type-check": "npm run type-check:backend && npm run type-check:frontend",
     "type-check:backend": "cd backend && npm run type-check",
     "type-check:frontend": "cd frontend && npm run type-check",
-    
     "clean": "npm run clean:deps && npm run clean:build",
     "clean:deps": "rm -rf node_modules backend/node_modules frontend/node_modules",
     "clean:build": "cd backend && rm -rf dist && cd ../frontend && rm -rf .expo web-build dist",
     "clean:cache": "cd frontend && npx expo r -c && cd ../backend && rm -rf .tsbuildinfo",
-    
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
     "docker:logs": "docker-compose logs -f",
-    
     "db:migrate": "cd backend && npx prisma migrate dev",
     "db:seed": "cd backend && npm run seed",
     "db:studio": "cd backend && npx prisma studio",
     "db:reset": "cd backend && npx prisma migrate reset",
-    
     "deploy:frontend": "cd frontend && vercel --prod",
     "deploy:backend": "cd backend && vercel --prod"
   },
