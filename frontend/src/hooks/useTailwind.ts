@@ -4,7 +4,7 @@ import { useColorScheme } from './useColorScheme';
 /**
  * Hook to generate dynamic Tailwind classes based on theme and state
  */
-export function useTailwind() {
+export default function useTailwind() {
   const { isDark, colorScheme } = useColorScheme();
 
   const tw = useMemo(() => ({
