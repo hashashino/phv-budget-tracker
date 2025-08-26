@@ -45,10 +45,9 @@ const LoginScreen: React.FC = () => {
   };
 
   return (
-    <View className="flex-1 bg-slate-50">
-      {/* Clean Background with Subtle Pattern */}
+    <View className="flex-1">
       <LinearGradient
-        colors={['#f8fafc', '#f1f5f9', '#e2e8f0']}
+        colors={['#1a365d', '#0369a1', '#0ea5e9']}
         className="flex-1"
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
@@ -58,47 +57,32 @@ const LoginScreen: React.FC = () => {
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
           <ScrollView 
-            className="flex-1 px-8" 
+            className="flex-1 px-6 pt-16" 
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ 
-              paddingTop: 80, 
-              paddingBottom: 60,
-              justifyContent: 'center',
-              minHeight: '100%'
-            }}
+            contentContainerStyle={{ paddingBottom: 40 }}
           >
-            {/* Clean Modern Header */}
+            {/* Premium Header */}
             <View className="items-center mb-12" style={fadeInUp}>
-              {/* App Icon */}
-              <View className="w-24 h-24 bg-primary-900 rounded-3xl items-center justify-center mb-8 shadow-xl">
-                <Text className="text-4xl">💰</Text>
+              <View className="mb-6">
+                <View className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-md items-center justify-center mb-4">
+                  <Text className="text-3xl">💰</Text>
+                </View>
               </View>
-              
-              <Text className="text-3xl font-bold text-slate-800 mb-3 text-center">
+              <Text className="text-3xl font-bold text-white mb-2 text-center">
                 Welcome Back
               </Text>
-              <Text className="text-lg text-slate-600 text-center max-w-sm leading-relaxed">
+              <Text className="text-lg text-white/80 text-center max-w-sm">
                 Sign in to your PHV Budget Tracker account
               </Text>
             </View>
 
-            {/* Clean White Card */}
+            {/* Premium Glass Card */}
             <View 
-              className="bg-white rounded-3xl p-8 mb-8 shadow-2xl border border-slate-200/50"
-              style={{
-                ...scaleStyle,
-                shadowColor: '#1e293b',
-                shadowOffset: { width: 0, height: 20 },
-                shadowOpacity: 0.1,
-                shadowRadius: 25,
-                elevation: 15,
-              }}
+              className="bg-white/10 backdrop-blur-md rounded-3xl p-6 mb-8 border border-white/20"
+              style={scaleStyle}
             >
-              {/* Email Field */}
-              <View className="mb-6">
-                <Text className="text-slate-700 text-base font-medium mb-3 ml-1">
-                  Email Address
-                </Text>
+              <View className="mb-4">
+                <Text className="text-white/70 text-sm mb-2 ml-1">Email</Text>
                 <TextInput
                   value={email}
                   onChangeText={setEmail}
@@ -106,110 +90,87 @@ const LoginScreen: React.FC = () => {
                   keyboardType="email-address"
                   autoCapitalize="none"
                   autoComplete="email"
-                  className="bg-slate-50"
-                  outlineColor="#e2e8f0"
-                  activeOutlineColor="#1a365d"
-                  textColor="#1e293b"
-                  style={{ 
-                    fontSize: 16,
-                    height: 56,
-                    borderRadius: 16,
-                  }}
-                  contentStyle={{ paddingLeft: 16 }}
-                  left={<TextInput.Icon icon="email" iconColor="#64748b" />}
+                  className="mb-4 bg-white/90"
+                  outlineColor="transparent"
+                  activeOutlineColor="#f97316"
+                  textColor="#1a365d"
+                  left={<TextInput.Icon icon="email" iconColor="#0ea5e9" />}
                 />
               </View>
               
-              {/* Password Field */}
-              <View className="mb-8">
-                <Text className="text-slate-700 text-base font-medium mb-3 ml-1">
-                  Password
-                </Text>
+              <View className="mb-6">
+                <Text className="text-white/70 text-sm mb-2 ml-1">Password</Text>
                 <TextInput
                   value={password}
                   onChangeText={setPassword}
                   mode="outlined"
                   secureTextEntry={!showPassword}
                   autoCapitalize="none"
-                  className="bg-slate-50"
-                  outlineColor="#e2e8f0"
-                  activeOutlineColor="#1a365d"
-                  textColor="#1e293b"
-                  style={{ 
-                    fontSize: 16,
-                    height: 56,
-                    borderRadius: 16,
-                  }}
-                  contentStyle={{ paddingLeft: 16 }}
-                  left={<TextInput.Icon icon="lock" iconColor="#64748b" />}
+                  className="bg-white/90"
+                  outlineColor="transparent"
+                  activeOutlineColor="#f97316"
+                  textColor="#1a365d"
+                  left={<TextInput.Icon icon="lock" iconColor="#0ea5e9" />}
                   right={
                     <TextInput.Icon 
                       icon={showPassword ? "eye-off" : "eye"}
-                      iconColor="#64748b"
+                      iconColor="#0ea5e9"
                       onPress={() => setShowPassword(!showPassword)}
                     />
                   }
                 />
               </View>
 
-              {/* Error Message */}
               {error && (
-                <View className="bg-red-50 border border-red-200 rounded-2xl p-4 mb-6">
-                  <Text className="text-red-700 text-sm text-center font-medium">
-                    {error}
-                  </Text>
-                </View>
+                <Text className="text-red-300 text-sm text-center mb-4 bg-red-500/20 py-2 px-3 rounded-lg">
+                  {error}
+                </Text>
               )}
 
-              {/* Sign In Button */}
               <Button
                 mode="contained"
                 onPress={handleLogin}
                 loading={isLoading}
                 disabled={!email.trim() || !password.trim() || isLoading}
-                buttonColor="#1a365d"
+                className="py-2 mb-2"
+                buttonColor="#f97316"
                 textColor="#ffffff"
-                className="h-14 justify-center mb-4"
                 style={{
                   borderRadius: 16,
                   elevation: 8,
-                  shadowColor: '#1a365d',
-                  shadowOffset: { width: 0, height: 8 },
-                  shadowOpacity: 0.2,
-                  shadowRadius: 20,
+                  shadowColor: '#f97316',
+                  shadowOffset: { width: 0, height: 4 },
+                  shadowOpacity: 0.3,
+                  shadowRadius: 12,
                 }}
-                contentStyle={{ height: 56 }}
               >
-                <Text className="text-base font-semibold">
-                  {isLoading ? 'Signing In...' : 'Sign In'}
-                </Text>
+                <Text className="text-lg font-semibold">Sign In</Text>
               </Button>
             </View>
 
-            {/* Clean Divider */}
+            {/* Premium Divider */}
             <View className="flex-row items-center my-8">
-              <View className="flex-1 h-px bg-slate-300" />
-              <Text className="mx-6 text-slate-500 text-sm font-medium">or</Text>
-              <View className="flex-1 h-px bg-slate-300" />
+              <View className="flex-1 h-px bg-white/20" />
+              <Text className="mx-4 text-white/60 text-sm">or</Text>
+              <View className="flex-1 h-px bg-white/20" />
             </View>
 
             {/* Register Section */}
             <View className="items-center" style={fadeInUp}>
-              <Text className="text-slate-600 text-base mb-6 text-center">
+              <Text className="text-white/70 text-base mb-4 text-center">
                 New to PHV Budget Tracker?
               </Text>
               <Button
                 mode="outlined"
                 onPress={handleRegister}
-                textColor="#1a365d"
-                className="h-14 w-full justify-center border-2"
+                textColor="#ffffff"
+                className="border-2 border-white/30"
                 style={{
                   borderRadius: 16,
-                  borderColor: '#1a365d',
+                  borderColor: 'rgba(255,255,255,0.3)',
                 }}
-                contentStyle={{ height: 56 }}
               >
-                <Text className="text-base font-semibold">Create Account</Text>
+                <Text className="text-base font-medium">Create Account</Text>
               </Button>
             </View>
           </ScrollView>
