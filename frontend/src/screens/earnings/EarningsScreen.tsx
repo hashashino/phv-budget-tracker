@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
-import { Text, Card, Button, FAB, Chip, useTheme, SegmentedButtons } from 'react-native-paper';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, ScrollView, Alert } from 'react-native';
+import { Text, Card, Button, FAB, Chip, useTheme, SegmentedButtons, IconButton, ActivityIndicator } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { EarningsStackParamList } from '@types/index';
+import { earningService, Earning } from '@/services/api/earningService';
 
 type EarningsScreenNavigationProp = NativeStackNavigationProp<EarningsStackParamList, 'EarningsList'>;
 
@@ -12,24 +13,67 @@ const EarningsScreen: React.FC = () => {
   const navigation = useNavigation<EarningsScreenNavigationProp>();
   const [selectedPlatform, setSelectedPlatform] = useState('All');
   const [selectedPeriod, setSelectedPeriod] = useState('today');
+  const [earnings, setEarnings] = useState<Earning[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Sample PHV earnings data
-  const earnings = [
-    { id: 1, date: '2025-08-23', time: '14:30', platform: 'Grab', amount: 45.80, tripType: 'GrabCar', distance: '12.3km', duration: '28min' },
-    { id: 2, date: '2025-08-23', time: '12:15', platform: 'TADA', amount: 32.50, tripType: 'Standard', distance: '8.7km', duration: '19min' },
-    { id: 3, date: '2025-08-23', time: '09:45', platform: 'Grab', amount: 28.90, tripType: 'GrabCar', distance: '6.2km', duration: '15min' },
-    { id: 4, date: '2025-08-22', time: '18:20', platform: 'Gojek', amount: 41.20, tripType: 'GoRide', distance: '11.5km', duration: '24min' },
-    { id: 5, date: '2025-08-22', time: '16:00', platform: 'Grab', amount: 52.30, tripType: 'GrabCar Premium', distance: '15.8km', duration: '32min' },
-  ];
+  // Load earnings from API
+  const loadEarnings = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await earningService.getEarnings({ limit: 100 });
+      if (response.success && response.data?.earnings) {
+        setEarnings(response.data.earnings);
+      } else {
+        setEarnings([]);
+      }
+    } catch (err) {
+      console.error('Failed to load earnings:', err);
+      setError('Failed to load earnings');
+      setEarnings([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Load earnings when component mounts
+  useEffect(() => {
+    loadEarnings();
+  }, []);
+
+  const handleDeleteEarning = async (earningId: string) => {
+    Alert.alert(
+      'Delete Earning',
+      'Are you sure you want to delete this earning record? This action cannot be undone.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { 
+          text: 'Delete', 
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await earningService.deleteEarning(earningId);
+              setEarnings(prev => prev.filter(earning => earning.id !== earningId));
+            } catch (err) {
+              console.error('Failed to delete earning:', err);
+              Alert.alert('Error', 'Failed to delete earning. Please try again.');
+            }
+          }
+        }
+      ]
+    );
+  };
 
   const platforms = ['All', 'Grab', 'TADA', 'Gojek', 'ComfortDelGro'];
   
   const filteredEarnings = selectedPlatform === 'All' 
     ? earnings 
-    : earnings.filter(earning => earning.platform === selectedPlatform);
+    : earnings.filter(earning => earning.platform?.name === selectedPlatform);
 
+  const today = new Date().toISOString().split('T')[0];
   const periodEarnings = selectedPeriod === 'today' 
-    ? filteredEarnings.filter(earning => earning.date === '2025-08-23')
+    ? filteredEarnings.filter(earning => earning.date.startsWith(today))
     : filteredEarnings;
 
   const totalEarnings = periodEarnings.reduce((sum, earning) => sum + earning.amount, 0);
@@ -184,25 +228,51 @@ const EarningsScreen: React.FC = () => {
 
       {/* Earnings List */}
       <ScrollView style={{ flex: 1 }}>
-        {periodEarnings.map((earning) => (
-          <Card key={earning.id} style={styles.earningCard}>
-            <Card.Content>
-              <View style={styles.earningHeader}>
-                <Text style={styles.platformBadge}>{earning.platform}</Text>
-                <Text style={styles.earningAmount}>+S${earning.amount.toFixed(2)}</Text>
-              </View>
-              <View style={styles.tripDetails}>
-                <Text style={styles.tripType}>{earning.tripType}</Text>
-                <Text style={styles.tripTime}>{earning.time}</Text>
-              </View>
-              <View style={styles.tripStats}>
-                <Text style={styles.tripStat}>{earning.distance}</Text>
-                <Text style={styles.tripStat}>{earning.duration}</Text>
-                <Text style={styles.tripStat}>{earning.date}</Text>
-              </View>
-            </Card.Content>
-          </Card>
-        ))}
+        {loading ? (
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 32 }}>
+            <ActivityIndicator size="large" />
+            <Text style={{ marginTop: 16, color: theme.colors.onSurface }}>Loading earnings...</Text>
+          </View>
+        ) : error ? (
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 32 }}>
+            <Text style={{ color: theme.colors.error, textAlign: 'center', marginBottom: 16 }}>{error}</Text>
+            <Button mode="contained" onPress={loadEarnings}>Retry</Button>
+          </View>
+        ) : periodEarnings.length === 0 ? (
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 32 }}>
+            <Text style={{ color: theme.colors.onSurface, textAlign: 'center' }}>No earnings found</Text>
+          </View>
+        ) : (
+          periodEarnings.map((earning) => (
+            <Card key={earning.id} style={styles.earningCard}>
+              <Card.Content>
+                <View style={styles.earningHeader}>
+                  <Text style={styles.platformBadge}>{earning.platform?.name || 'Unknown Platform'}</Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text style={styles.earningAmount}>+S${earning.amount.toFixed(2)}</Text>
+                    <IconButton
+                      icon="delete"
+                      size={20}
+                      onPress={() => handleDeleteEarning(earning.id)}
+                      iconColor={theme.colors.error}
+                    />
+                  </View>
+                </View>
+                <View style={styles.tripDetails}>
+                  <Text style={styles.tripType}>{earning.notes || 'Earning'}</Text>
+                  <Text style={styles.tripTime}>
+                    {earning.startTime ? new Date(`2000-01-01T${earning.startTime}`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
+                  </Text>
+                </View>
+                <View style={styles.tripStats}>
+                  {earning.distance && <Text style={styles.tripStat}>{earning.distance}km</Text>}
+                  {earning.workingHours && <Text style={styles.tripStat}>{earning.workingHours}h</Text>}
+                  <Text style={styles.tripStat}>{new Date(earning.date).toLocaleDateString()}</Text>
+                </View>
+              </Card.Content>
+            </Card>
+          ))
+        )}
       </ScrollView>
 
       {/* Add Earning FAB */}

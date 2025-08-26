@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
-import { Text, Card, Button, FAB, Chip, useTheme } from 'react-native-paper';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, ScrollView, Alert } from 'react-native';
+import { Text, Card, Button, FAB, Chip, useTheme, IconButton, ActivityIndicator } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ExpensesStackParamList } from '@types/index';
+import { expenseService, Expense } from '@/services/api/expenseService';
 
 type ExpensesScreenNavigationProp = NativeStackNavigationProp<ExpensesStackParamList, 'ExpensesList'>;
 
@@ -11,21 +12,63 @@ const ExpensesScreen: React.FC = () => {
   const theme = useTheme();
   const navigation = useNavigation<ExpensesScreenNavigationProp>();
   const [selectedFilter, setSelectedFilter] = useState('All');
+  const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Sample PHV expenses data
-  const expenses = [
-    { id: 1, date: '2025-08-23', category: 'Fuel', amount: 85.50, description: 'Shell Station Jurong', receipt: true },
-    { id: 2, date: '2025-08-22', category: 'Parking', amount: 12.00, description: 'CBD Parking', receipt: false },
-    { id: 3, date: '2025-08-22', category: 'Maintenance', amount: 150.00, description: 'Car Servicing', receipt: true },
-    { id: 4, date: '2025-08-21', category: 'ERP/Toll', amount: 8.50, description: 'ERP Charges', receipt: false },
-    { id: 5, date: '2025-08-21', category: 'Food', amount: 25.80, description: 'Lunch Break', receipt: true },
-  ];
+  // Load expenses from API
+  const loadExpenses = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await expenseService.getExpenses({ limit: 100 });
+      if (response.success && response.data?.expenses) {
+        setExpenses(response.data.expenses);
+      } else {
+        setExpenses([]);
+      }
+    } catch (err) {
+      console.error('Failed to load expenses:', err);
+      setError('Failed to load expenses');
+      setExpenses([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Load expenses when component mounts
+  useEffect(() => {
+    loadExpenses();
+  }, []);
+
+  const handleDeleteExpense = async (expenseId: string) => {
+    Alert.alert(
+      'Delete Expense',
+      'Are you sure you want to delete this expense? This action cannot be undone.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { 
+          text: 'Delete', 
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await expenseService.deleteExpense(expenseId);
+              setExpenses(prev => prev.filter(expense => expense.id !== expenseId));
+            } catch (err) {
+              console.error('Failed to delete expense:', err);
+              Alert.alert('Error', 'Failed to delete expense. Please try again.');
+            }
+          }
+        }
+      ]
+    );
+  };
 
   const categories = ['All', 'Fuel', 'Parking', 'Maintenance', 'ERP/Toll', 'Food', 'Insurance'];
   
   const filteredExpenses = selectedFilter === 'All' 
     ? expenses 
-    : expenses.filter(expense => expense.category === selectedFilter);
+    : expenses.filter(expense => expense.category?.name === selectedFilter);
 
   const totalExpenses = filteredExpenses.reduce((sum, expense) => sum + expense.amount, 0);
 
@@ -145,14 +188,39 @@ const ExpensesScreen: React.FC = () => {
 
       {/* Expenses List */}
       <ScrollView style={{ flex: 1 }}>
-        {filteredExpenses.map((expense) => (
+        {loading ? (
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 32 }}>
+            <ActivityIndicator size="large" />
+            <Text style={{ marginTop: 16, color: theme.colors.onSurface }}>Loading expenses...</Text>
+          </View>
+        ) : error ? (
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 32 }}>
+            <Text style={{ color: theme.colors.error, textAlign: 'center', marginBottom: 16 }}>{error}</Text>
+            <Button mode="contained" onPress={loadExpenses}>Retry</Button>
+          </View>
+        ) : filteredExpenses.length === 0 ? (
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 32 }}>
+            <Text style={{ color: theme.colors.onSurface, textAlign: 'center' }}>No expenses found</Text>
+          </View>
+        ) : (
+          filteredExpenses.map((expense) => (
           <Card key={expense.id} style={styles.expenseCard}>
             <Card.Content>
               <View style={styles.expenseHeader}>
-                <Text style={styles.expenseCategory}>{expense.category}</Text>
-                <Text style={styles.expenseAmount}>-S${expense.amount.toFixed(2)}</Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.expenseCategory}>{expense.category?.name || 'Uncategorized'}</Text>
+                  <Text style={styles.expenseDescription}>{expense.description}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <Text style={styles.expenseAmount}>-S${expense.amount.toFixed(2)}</Text>
+                  <IconButton
+                    icon="delete"
+                    size={20}
+                    onPress={() => handleDeleteExpense(expense.id)}
+                    iconColor={theme.colors.error}
+                  />
+                </View>
               </View>
-              <Text style={styles.expenseDescription}>{expense.description}</Text>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Text style={styles.expenseDate}>{expense.date}</Text>
                 {expense.receipt && (
@@ -161,7 +229,8 @@ const ExpensesScreen: React.FC = () => {
               </View>
             </Card.Content>
           </Card>
-        ))}
+          ))
+        )}
       </ScrollView>
 
       {/* Add Expense FAB */}

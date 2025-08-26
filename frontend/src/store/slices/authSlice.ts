@@ -37,13 +37,26 @@ export const loginUser = createAsyncThunk(
       
       if (!response.ok) {
         // Try to get error message from response
-        const errorData = await response.json().catch(() => ({ error: { message: 'Login failed' } }));
-        return rejectWithValue(errorData.error?.message || 'Invalid email or password');
+        try {
+          const errorData = await response.json();
+          if (response.status === 401) {
+            return rejectWithValue('Invalid email or password');
+          }
+          return rejectWithValue(errorData.error?.message || errorData.message || 'Login failed');
+        } catch {
+          return rejectWithValue('Invalid email or password');
+        }
       }
       
       const data = await response.json();
       return data;
-    } catch (error) {
+    } catch (error: any) {
+      if (error.name === 'AbortError') {
+        return rejectWithValue('Request timed out. Please try again.');
+      }
+      if (!navigator.onLine) {
+        return rejectWithValue('No internet connection. Please check your connection.');
+      }
       return rejectWithValue('Network error. Please check your connection.');
     }
   }
@@ -134,8 +147,8 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.user = action.payload.user;
-        state.token = action.payload.token;
+        state.user = action.payload.data.user;
+        state.token = action.payload.data.token;
         state.isAuthenticated = true;
         state.error = null;
       })
@@ -151,8 +164,8 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.user = action.payload.user;
-        state.token = action.payload.token;
+        state.user = action.payload.data.user;
+        state.token = action.payload.data.token;
         state.isAuthenticated = true;
         state.error = null;
       })
