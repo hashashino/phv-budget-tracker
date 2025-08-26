@@ -22,7 +22,7 @@ const LoginScreen: React.FC = () => {
   const dispatch = useAppDispatch();
   const { isLoading, error } = useAppSelector(state => state.auth);
   const tw = useTailwind();
-  const { fadeInUp, scaleIn } = useAnimation();
+  const { fadeInUp, scaleStyle } = useAnimation();
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -79,7 +79,7 @@ const LoginScreen: React.FC = () => {
             {/* Premium Glass Card */}
             <View 
               className="bg-white/10 backdrop-blur-md rounded-3xl p-6 mb-8 border border-white/20"
-              style={scaleIn}
+              style={scaleStyle}
             >
               <View className="mb-4">
                 <Text className="text-white/70 text-sm mb-2 ml-1">Email</Text>

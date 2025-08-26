@@ -4,7 +4,7 @@ import { useCallback, useEffect } from 'react';
 /**
  * Custom hook for common animations in PHV Budget Tracker
  */
-export default function useAnimation() {
+export function useAnimation() {
   const scale = useSharedValue(1);
   const opacity = useSharedValue(1);
   const translateY = useSharedValue(0);
@@ -84,6 +84,17 @@ export default function useAnimation() {
     ],
   }));
 
+  // Preset animation styles for common patterns
+  const fadeInUp = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+    transform: [{ translateY: translateY.value }],
+  }));
+
+  const slideInRight = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+    transform: [{ translateX: translateY.value }], // Reuse translateY for horizontal
+  }));
+
   // Auto fade in on mount
   useEffect(() => {
     fadeIn();
@@ -110,5 +121,8 @@ export default function useAnimation() {
     slideStyle,
     rotateStyle,
     combinedStyle,
+    // Preset styles
+    fadeInUp,
+    slideInRight,
   };
 }

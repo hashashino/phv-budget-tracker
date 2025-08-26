@@ -38,7 +38,7 @@ const DashboardScreen: React.FC = () => {
   const { user } = useAppSelector(state => state.auth);
   const tw = useTailwind();
   const { formatCurrency, formatEarnings, formatExpenses } = useCurrency();
-  const { fadeInUp, scaleIn, slideInRight } = useAnimation();
+  const { fadeInUp, scaleStyle, slideInRight } = useAnimation();
   
   const [refreshing, setRefreshing] = React.useState(false);
   const [showQuickActions, setShowQuickActions] = useState(false);
@@ -104,7 +104,7 @@ const DashboardScreen: React.FC = () => {
           <View className="flex-row gap-3 mb-6">
             <View 
               className="flex-1 bg-white/70 backdrop-blur-md rounded-2xl p-5 border border-white/50"
-              style={scaleIn}
+              style={scaleStyle}
             >
               <View className="items-center">
                 <View className="w-12 h-12 bg-success-500/20 rounded-full items-center justify-center mb-3">
@@ -123,7 +123,7 @@ const DashboardScreen: React.FC = () => {
             
             <View 
               className="flex-1 bg-white/70 backdrop-blur-md rounded-2xl p-5 border border-white/50"
-              style={scaleIn}
+              style={scaleStyle}
             >
               <View className="items-center">
                 <View className="w-12 h-12 bg-danger-500/20 rounded-full items-center justify-center mb-3">

@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 /**
  * Currency formatting hook for Singapore and other supported regions
  */
-export default function useCurrency(locale: string = 'en-SG') {
+export function useCurrency(locale: string = 'en-SG') {
   const formatters = useMemo(() => {
     const regions = {
       'en-SG': { currency: 'SGD', symbol: 'S$' },
@@ -84,12 +84,23 @@ export default function useCurrency(locale: string = 'en-SG') {
     return `${value.toFixed(decimals)}%`;
   };
 
+  // Specialized formatters for earnings and expenses
+  const formatEarnings = (amount: number): string => {
+    return formatCurrency(amount);
+  };
+
+  const formatExpenses = (amount: number): string => {
+    return formatCurrency(amount);
+  };
+
   return {
     formatCurrency,
     formatCompact, 
     formatNumber,
     formatCustom,
     formatPercentage,
+    formatEarnings,
+    formatExpenses,
     getAmountColor,
     symbol: formatters.symbol,
     currencyCode: formatters.currencyCode,
