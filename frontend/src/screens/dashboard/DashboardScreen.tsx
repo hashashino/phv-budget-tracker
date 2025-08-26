@@ -17,6 +17,7 @@ import {
   List,
   Text,
   Button,
+  ActivityIndicator,
 } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -25,6 +26,8 @@ import { MainTabParamList } from '@types/index';
 
 import { useAppSelector } from '@store/store';
 import { APP_CONFIG } from '@constants/index';
+import { expenseService } from '@/services/api/expenseService';
+import { earningService } from '@/services/api/earningService';
 
 type DashboardScreenNavigationProp = BottomTabNavigationProp<MainTabParamList, 'Dashboard'>;
 
@@ -34,25 +37,101 @@ const DashboardScreen: React.FC = () => {
   const { user } = useAppSelector(state => state.auth);
   const [refreshing, setRefreshing] = React.useState(false);
   const [showQuickActions, setShowQuickActions] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [dashboardData, setDashboardData] = useState({
+    todayEarnings: 0,
+    todayExpenses: 0,
+    weeklyEarnings: 0,
+    weeklyExpenses: 0,
+    monthlyEarnings: 0,
+    monthlyExpenses: 0,
+    netIncome: 0,
+    totalTrips: 0,
+    avgTripEarning: 0,
+  });
+
+  const loadDashboardData = async () => {
+    try {
+      setLoading(true);
+      
+      // Get current date ranges
+      const today = new Date().toISOString().split('T')[0];
+      const weekStart = new Date();
+      weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+      const monthStart = new Date();
+      monthStart.setDate(1);
+      
+      // Load expenses and earnings stats
+      const [expenseStats, earningStats] = await Promise.all([
+        expenseService.getExpenseStats({
+          startDate: monthStart.toISOString().split('T')[0],
+          endDate: new Date().toISOString().split('T')[0],
+        }),
+        earningService.getEarningStats({
+          startDate: monthStart.toISOString().split('T')[0], 
+          endDate: new Date().toISOString().split('T')[0],
+        })
+      ]);
+
+      // Load recent data to calculate today's numbers
+      const [expensesResponse, earningsResponse] = await Promise.all([
+        expenseService.getExpenses({ limit: 100 }),
+        earningService.getEarnings({ limit: 100 })
+      ]);
+
+      const expenses = expensesResponse.success ? expensesResponse.data.expenses : [];
+      const earnings = earningsResponse.success ? earningsResponse.data.earnings : [];
+
+      // Calculate today's totals
+      const todayExpenses = expenses
+        .filter(expense => expense.date.startsWith(today))
+        .reduce((sum, expense) => sum + parseFloat(expense.amount.toString()), 0);
+      
+      const todayEarnings = earnings
+        .filter(earning => earning.date.startsWith(today))
+        .reduce((sum, earning) => sum + parseFloat(earning.amount.toString()), 0);
+
+      // Calculate weekly totals  
+      const weeklyExpenses = expenses
+        .filter(expense => new Date(expense.date) >= weekStart)
+        .reduce((sum, expense) => sum + parseFloat(expense.amount.toString()), 0);
+        
+      const weeklyEarnings = earnings
+        .filter(earning => new Date(earning.date) >= weekStart)  
+        .reduce((sum, earning) => sum + parseFloat(earning.amount.toString()), 0);
+
+      // Use stats for monthly data
+      const monthlyExpenses = expenseStats.success ? expenseStats.data.totalAmount : 0;
+      const monthlyEarnings = earningStats.success ? earningStats.data.totalAmount : 0;
+      const totalTrips = earningStats.success ? earningStats.data.totalTrips : 0;
+
+      setDashboardData({
+        todayEarnings,
+        todayExpenses,
+        weeklyEarnings,
+        weeklyExpenses,
+        monthlyEarnings,
+        monthlyExpenses,
+        netIncome: monthlyEarnings - monthlyExpenses,
+        totalTrips,
+        avgTripEarning: totalTrips > 0 ? monthlyEarnings / totalTrips : 0,
+      });
+      
+    } catch (error) {
+      console.error('Failed to load dashboard data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadDashboardData();
+  }, []);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    // TODO: Fetch latest data
-    setTimeout(() => setRefreshing(false), 2000);
+    loadDashboardData().finally(() => setRefreshing(false));
   }, []);
-
-  // Mock data - replace with actual data from store
-  const dashboardData = {
-    todayEarnings: 180.50,
-    todayExpenses: 45.30,
-    weeklyEarnings: 1250.00,
-    weeklyExpenses: 320.75,
-    monthlyEarnings: 5200.00,
-    monthlyExpenses: 1450.25,
-    netIncome: 3749.75,
-    totalTrips: 156,
-    avgTripEarning: 33.33,
-  };
 
   const styles = StyleSheet.create({
     container: {
@@ -196,7 +275,7 @@ const DashboardScreen: React.FC = () => {
         {/* Greeting */}
         <View style={styles.greeting}>
           <Title style={styles.greetingText}>
-            Good morning, {user?.name?.split(' ')[0] || 'Driver'}!
+            Good morning, {user?.firstName || 'Driver'}!
           </Title>
           <Paragraph style={styles.dateText}>
             {new Date().toLocaleDateString('en-SG', {
@@ -208,7 +287,19 @@ const DashboardScreen: React.FC = () => {
           </Paragraph>
         </View>
 
+        {/* Loading State */}
+        {loading && (
+          <Card style={styles.summaryCard}>
+            <View style={{ alignItems: 'center', padding: 32 }}>
+              <ActivityIndicator size="large" />
+              <Text style={{ marginTop: 16, color: theme.colors.onSurface }}>Loading dashboard...</Text>
+            </View>
+          </Card>
+        )}
+
         {/* Today's Summary */}
+        {!loading && (
+        <>
         <View style={styles.summaryRow}>
           <Card style={styles.summaryCard}>
             <MaterialCommunityIcons
@@ -285,6 +376,8 @@ const DashboardScreen: React.FC = () => {
             </Chip>
           </View>
         </Card>
+        </>
+        )}
       </ScrollView>
 
       {/* Quick Action FAB */}

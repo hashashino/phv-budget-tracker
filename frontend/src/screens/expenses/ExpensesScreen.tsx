@@ -128,8 +128,13 @@ const ExpensesScreen: React.FC = () => {
     },
     expenseCategory: {
       fontSize: 14,
-      color: theme.colors.primary,
-      fontWeight: '500',
+      color: theme.colors.onErrorContainer,
+      backgroundColor: theme.colors.errorContainer,
+      paddingHorizontal: 10,
+      paddingVertical: 4,
+      borderRadius: 8,
+      fontWeight: '600',
+      alignSelf: 'flex-start',
     },
     expenseDescription: {
       fontSize: 16,
@@ -148,9 +153,18 @@ const ExpensesScreen: React.FC = () => {
       bottom: 0,
       backgroundColor: theme.colors.primary,
     },
+    deleteButton: {
+      backgroundColor: theme.colors.errorContainer,
+      borderRadius: 20,
+    },
     receiptIndicator: {
       fontSize: 12,
-      color: theme.colors.tertiary,
+      color: theme.colors.primary,
+      backgroundColor: theme.colors.primaryContainer,
+      paddingHorizontal: 8,
+      paddingVertical: 4,
+      borderRadius: 12,
+      fontWeight: '500',
     },
   });
 
@@ -217,13 +231,14 @@ const ExpensesScreen: React.FC = () => {
                     icon="delete"
                     size={20}
                     onPress={() => handleDeleteExpense(expense.id)}
-                    iconColor={theme.colors.error}
+                    iconColor={theme.colors.onErrorContainer}
+                    style={styles.deleteButton}
                   />
                 </View>
               </View>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Text style={styles.expenseDate}>{expense.date}</Text>
-                {expense.receipt && (
+                {expense.receiptId && (
                   <Text style={styles.receiptIndicator}>📄 Receipt</Text>
                 )}
               </View>

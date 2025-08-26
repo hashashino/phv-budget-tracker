@@ -138,12 +138,12 @@ const EarningsScreen: React.FC = () => {
     },
     platformBadge: {
       fontSize: 14,
-      color: theme.colors.onSecondaryContainer,
-      backgroundColor: theme.colors.secondaryContainer,
-      paddingHorizontal: 8,
-      paddingVertical: 2,
-      borderRadius: 4,
-      fontWeight: '500',
+      color: theme.colors.onPrimaryContainer,
+      backgroundColor: theme.colors.primaryContainer,
+      paddingHorizontal: 10,
+      paddingVertical: 4,
+      borderRadius: 8,
+      fontWeight: '600',
     },
     tripDetails: {
       flexDirection: 'row',
@@ -176,6 +176,10 @@ const EarningsScreen: React.FC = () => {
       right: 0,
       bottom: 0,
       backgroundColor: theme.colors.primary,
+    },
+    deleteButton: {
+      backgroundColor: theme.colors.errorContainer,
+      borderRadius: 20,
     },
   });
 
@@ -254,7 +258,8 @@ const EarningsScreen: React.FC = () => {
                       icon="delete"
                       size={20}
                       onPress={() => handleDeleteEarning(earning.id)}
-                      iconColor={theme.colors.error}
+                      iconColor={theme.colors.onErrorContainer}
+                      style={styles.deleteButton}
                     />
                   </View>
                 </View>
