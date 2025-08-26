@@ -239,6 +239,15 @@ const DashboardScreen: React.FC = () => {
       position: 'absolute',
       right: 16,
       bottom: 16,
+      backgroundColor: theme.colors.primary,
+      shadowColor: theme.colors.shadow,
+      shadowOffset: {
+        width: 0,
+        height: 4,
+      },
+      shadowOpacity: 0.3,
+      shadowRadius: 4.65,
+      elevation: 8,
     },
     quickActionsModal: {
       backgroundColor: 'white',
@@ -385,6 +394,8 @@ const DashboardScreen: React.FC = () => {
         style={styles.fab}
         icon="plus"
         label="Add Entry"
+        color={theme.colors.onPrimary}
+        customSize={56}
         onPress={() => setShowQuickActions(true)}
       />
 

@@ -152,6 +152,14 @@ const ExpensesScreen: React.FC = () => {
       right: 0,
       bottom: 0,
       backgroundColor: theme.colors.primary,
+      shadowColor: theme.colors.shadow,
+      shadowOffset: {
+        width: 0,
+        height: 4,
+      },
+      shadowOpacity: 0.3,
+      shadowRadius: 4.65,
+      elevation: 8,
     },
     deleteButton: {
       backgroundColor: theme.colors.errorContainer,
@@ -253,6 +261,8 @@ const ExpensesScreen: React.FC = () => {
         style={styles.fab}
         icon="plus"
         label="Add Expense"
+        color={theme.colors.onPrimary}
+        customSize={56}
         onPress={() => {
           navigation.navigate('ExpenseEntry', {});
         }}
