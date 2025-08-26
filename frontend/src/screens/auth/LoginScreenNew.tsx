@@ -12,7 +12,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useAppDispatch, useAppSelector } from '@store/store';
 import { loginUser, clearError, resetLoadingState } from '@store/slices/authSlice';
 import Animated from 'react-native-reanimated';
-import { useAnimation, useTheme as useCustomTheme } from '@hooks';
+import { useAnimation, useTheme as useCustomTheme, useTailwind } from '@hooks';
 
 /**
  * Modern Login Screen with NativeWind styling and premium animations
@@ -20,6 +20,7 @@ import { useAnimation, useTheme as useCustomTheme } from '@hooks';
 const LoginScreen: React.FC = () => {
   const theme = useTheme();
   const customTheme = useCustomTheme();
+  const { tw, cn } = useTailwind();
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
   const { isLoading, error } = useAppSelector(state => state.auth);

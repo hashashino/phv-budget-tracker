@@ -7,3 +7,7 @@ export { default as useCurrency } from './useCurrency';
 export { default as useNetworkStatus } from './useNetworkStatus';
 export { default as useBiometrics } from './useBiometrics';
 export { default as useAppState } from './useAppState';
+
+// NativeWind specific hooks
+export { default as useColorScheme } from './useColorScheme';
+export { default as useTailwind } from './useTailwind';
