@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 /**
  * Enhanced color scheme hook for NativeWind with manual toggle support
  */
-export function useColorScheme() {
+export default function useColorScheme() {
   const systemColorScheme = useRNColorScheme();
   const [colorScheme, setColorScheme] = useState(systemColorScheme);
   const [isManualMode, setIsManualMode] = useState(false);
