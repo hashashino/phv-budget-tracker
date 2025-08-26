@@ -21,6 +21,7 @@ import receiptRoutes from './routes/receipts';
 import debtRoutes from './routes/debts';
 // import analyticsRoutes from './routes/analytics';
 import userRoutes from './routes/users';
+import adminRoutes from './routes/admin';
 
 // Import utilities
 import { logger } from './utils/logger';
@@ -60,7 +61,12 @@ app.use(helmet({
 }));
 
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:3001', // Admin web
+    'http://localhost:8081', // User frontend
+    process.env.FRONTEND_URL
+  ].filter(Boolean), // Remove any falsy values
   credentials: true,
 }));
 
@@ -87,6 +93,7 @@ app.get('/health', (req, res) => {
 
 // API routes
 app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
 app.use('/api/expenses', authMiddleware, expenseRoutes);
 app.use('/api/earnings', authMiddleware, earningRoutes);
 app.use('/api/receipts', authMiddleware, receiptRoutes);

@@ -67,8 +67,9 @@ export const errorHandler = (
   let { statusCode = 500, message } = error;
 
   // Handle Prisma errors
-  if (error instanceof Prisma.PrismaClientKnownRequestError) {
-    switch (error.code) {
+  if (error.name === 'PrismaClientKnownRequestError') {
+    const prismaError = error as any;
+    switch (prismaError.code) {
       case 'P2002':
         statusCode = 409;
         message = 'Resource already exists';
@@ -85,10 +86,10 @@ export const errorHandler = (
         statusCode = 400;
         message = 'Database operation failed';
     }
-  } else if (error instanceof Prisma.PrismaClientValidationError) {
+  } else if (error.name === 'PrismaClientValidationError') {
     statusCode = 400;
     message = 'Invalid data provided';
-  } else if (error instanceof Prisma.PrismaClientInitializationError) {
+  } else if (error.name === 'PrismaClientInitializationError') {
     statusCode = 500;
     message = 'Database connection failed';
   }

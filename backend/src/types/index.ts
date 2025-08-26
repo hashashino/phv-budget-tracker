@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { User, BankName, CategoryType, PlatformType, VehicleType, FuelType, DebtType, TransactionType } from '@prisma/client';
+import { User, UserRole, BankName, CategoryType, PlatformType, VehicleType, FuelType, DebtType, TransactionType } from '@prisma/client';
 
 // Express Request interface extension is in middleware/auth.ts
 
@@ -428,3 +428,6 @@ export class ServiceUnavailableError extends AppError {
     super(message, 503);
   }
 }
+
+// Re-export UserRole for convenience
+export { UserRole };

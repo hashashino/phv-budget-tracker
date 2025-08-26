@@ -73,6 +73,9 @@ export const authMiddleware = async (
   }
 };
 
+// Convenience function for requiring authentication
+export const requireAuth = authMiddleware;
+
 export const optionalAuthMiddleware = async (
   req: Request,
   res: Response,
