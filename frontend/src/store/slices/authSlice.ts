@@ -147,10 +147,15 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.user = action.payload.data.user;
-        state.token = action.payload.data.token;
-        state.isAuthenticated = true;
-        state.error = null;
+        if (action.payload?.data?.user && action.payload?.data?.token) {
+          state.user = action.payload.data.user;
+          state.token = action.payload.data.token;
+          state.isAuthenticated = true;
+          state.error = null;
+        } else {
+          state.error = 'Invalid response from server';
+          state.isAuthenticated = false;
+        }
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
@@ -164,10 +169,15 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.user = action.payload.data.user;
-        state.token = action.payload.data.token;
-        state.isAuthenticated = true;
-        state.error = null;
+        if (action.payload?.data?.user && action.payload?.data?.token) {
+          state.user = action.payload.data.user;
+          state.token = action.payload.data.token;
+          state.isAuthenticated = true;
+          state.error = null;
+        } else {
+          state.error = 'Invalid response from server';
+          state.isAuthenticated = false;
+        }
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.isLoading = false;
