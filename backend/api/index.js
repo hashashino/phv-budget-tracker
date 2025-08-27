@@ -1,6 +1,5 @@
-// Import the main Express app
-const app = require('../src/server.js');
+// Import the main Express app from compiled dist directory
+const app = require('../dist/server.js');
 
 // Export as Vercel serverless function
-// Updated to trigger redeployment
 module.exports = app;
