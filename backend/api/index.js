@@ -1,5 +1,5 @@
-// Import the main Express app
-const app = require('../dist/server.js');
+// Import the simple JavaScript Express app
+const app = require('./server.js');
 
 // Export as Vercel serverless function
 module.exports = app;
